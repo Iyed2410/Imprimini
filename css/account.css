@@ -185,6 +185,8 @@ body {
     color: var(--text-color);
     font-size: 16px;
     pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .inputBx .toggle-password {
@@ -297,12 +299,6 @@ body {
 }
 
 @media (max-width: 480px) {
-    .ring {
-        width: 100%;
-        height: 100%;
-        padding: 20px;
-    }
-
     .login {
         width: 100%;
         padding: 30px 20px;
@@ -321,5 +317,45 @@ body {
         flex-direction: column;
         gap: 10px;
         align-items: flex-start;
+    }
+
+    .ring {
+        width: 300px;
+        height: 300px;
+        transform: scale(0.9);
+    }
+
+    .ring i {
+        border-width: 1px;
+    }
+
+    .ring:hover i {
+        border-width: 3px;
+    }
+}
+
+@media (max-width: 360px) {
+    .ring {
+        width: 250px;
+        height: 250px;
+        transform: scale(0.85);
+    }
+
+    .login {
+        padding: 25px 15px;
+    }
+
+    .login h2 {
+        font-size: 1.3em;
+        margin-bottom: 20px;
+    }
+
+    .inputBx {
+        margin-bottom: 15px;
+    }
+
+    .inputBx input {
+        padding: 10px 35px;
+        font-size: 13px;
     }
 }
