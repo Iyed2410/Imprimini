@@ -167,38 +167,64 @@ function renderProducts(productsToRender = products) {
 
 // Function to filter products by category
 function filterProducts(category) {
-    console.log('Filtering products by category:', category);
-    if (category === 'All') {
-        renderProducts();
-    } else {
-        const filtered = products.filter(product => product.category === category);
-        renderProducts(filtered);
-    }
+    const filteredProducts = category === 'All' 
+        ? products 
+        : products.filter(product => product.category === category);
+    return filteredProducts;
 }
 
 // Function to sort products
-function sortProducts(criteria) {
-    console.log('Sorting products by:', criteria);
-    let sorted = [...products];
-    
+function sortProducts(products, criteria) {
+    const sortedProducts = [...products];
     switch (criteria) {
+        case 'name':
+            sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+            break;
         case 'price-low':
-            sorted.sort((a, b) => a.price - b.price);
+            sortedProducts.sort((a, b) => a.price - b.price);
             break;
         case 'price-high':
-            sorted.sort((a, b) => b.price - a.price);
-            break;
-        case 'name':
-            sorted.sort((a, b) => a.name.localeCompare(b.name));
-            break;
-        default:
+            sortedProducts.sort((a, b) => b.price - a.price);
             break;
     }
-    
-    renderProducts(sorted);
+    return sortedProducts;
 }
 
-// Call renderProducts when DOM is loaded
+// Initialize filtering and sorting
 document.addEventListener('DOMContentLoaded', () => {
-    renderProducts();
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const sortSelect = document.getElementById('sort-select');
+    let currentCategory = 'All';
+    let currentSortCriteria = 'name';
+
+    // Function to update product display
+    function updateProducts() {
+        const filteredProducts = filterProducts(currentCategory);
+        const sortedAndFilteredProducts = sortProducts(filteredProducts, currentSortCriteria);
+        renderProducts(sortedAndFilteredProducts);
+
+        // Update active filter button
+        filterButtons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.category === currentCategory);
+        });
+    }
+
+    // Filter button click handlers
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            currentCategory = button.dataset.category;
+            updateProducts();
+        });
+    });
+
+    // Sort select change handler
+    if (sortSelect) {
+        sortSelect.addEventListener('change', () => {
+            currentSortCriteria = sortSelect.value;
+            updateProducts();
+        });
+    }
+
+    // Initial render
+    updateProducts();
 });
