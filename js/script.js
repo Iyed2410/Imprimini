@@ -214,3 +214,51 @@ tabButtons.forEach(button => {
         document.getElementById(tabId).classList.add('active');
     });
 });
+
+// Mobile Menu
+document.addEventListener('DOMContentLoaded', () => {
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const navbar = document.querySelector('.navbar');
+    const mobileMenuOverlay = document.querySelector('.mobile-menu-overlay');
+
+    if (!mobileMenuBtn || !navbar || !mobileMenuOverlay) {
+        console.error('Mobile menu elements not found:', {
+            mobileMenuBtn: !!mobileMenuBtn,
+            navbar: !!navbar,
+            mobileMenuOverlay: !!mobileMenuOverlay
+        });
+        return;
+    }
+
+    function toggleMobileMenu() {
+        console.log('Toggling mobile menu');
+        navbar.classList.toggle('active');
+        mobileMenuOverlay.classList.toggle('active');
+        document.body.style.overflow = navbar.classList.contains('active') ? 'hidden' : '';
+    }
+
+    function closeMobileMenu() {
+        navbar.classList.remove('active');
+        mobileMenuOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    mobileMenuBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleMobileMenu();
+    });
+
+    mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
+    // Close mobile menu when clicking a link
+    document.querySelectorAll('.navbar a').forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+    });
+
+    // Close mobile menu on window resize
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            closeMobileMenu();
+        }
+    });
+});

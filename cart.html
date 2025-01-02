@@ -5,10 +5,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Shopping Cart - Custom Printing</title>
-    <link rel="stylesheet" href="./css/styles.css" />
-    <link rel="stylesheet" href="./css/cart.css" />
-    <link rel="stylesheet" href="./css/notifications.css" />
-    <link rel="stylesheet" href="./css/drone-checkout.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/cart.css" />
+    <link rel="stylesheet" href="css/notifications.css" />
+    <link rel="stylesheet" href="css/drone-checkout.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
 </head>
@@ -19,28 +19,32 @@
 
     <header>
         <div class="header-container">
-            <a href="./index.html">
+            <a href="index.html">
                 <div class="logo-container">
-                    <img class="logo logo-light" src="./img/imprimini_white.png" alt="Logo Light">
-                    <img class="logo logo-dark" src="./img/imprimini_black.png" alt="Logo Dark">
+                    <img class="logo logo-light" src="img/imprimini_white.png" alt="Logo Light">
+                    <img class="logo logo-dark" src="img/imprimini_black.png" alt="Logo Dark">
                 </div>
             </a>
             <nav class="navbar">
                 <ul>
-                    <li><a href="./index.html">Home</a></li>
-                    <li><a href="./products.html">Products</a></li>
-                    <li><a href="./contact.html">Contact</a></li>
-                    <li><a href="./about.html">About</a></li>
-                    <li><a href="./community.html">Community</a></li>
-                    <li class="account-item"><a href="./account.html"><i class="fas fa-user"></i> Account</a></li>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="community.html">Community</a></li>
+                    <li class="account-item"><a href="account.html"><i class="fas fa-user"></i> Account</a></li>
                 </ul>
             </nav>
             <div class="cart-icon">
-                <a href="./cart.html"><i class="fas fa-shopping-cart"></i></a>
+                <a href="cart.html"><i class="fas fa-shopping-cart"></i></a>
                 <span class="cart-count">0</span>
             </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </header>
+    <div class="mobile-menu-overlay"></div>
 
     <main class="cart-page">
         <div class="container">
@@ -75,10 +79,10 @@
                 <div class="footer-section">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="./index.html">Home</a></li>
-                        <li><a href="./products.html">Products</a></li>
-                        <li><a href="./contact.html">Contact</a></li>
-                        <li><a href="./about.html">About</a></li>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="products.html">Products</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="about.html">About</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -106,9 +110,9 @@
     </button>
 
     <!-- Load scripts in correct order -->
-    <script src="./js/cart.js"></script>
-    <script src="./js/cart-init.js"></script>
-    <script src="./js/script.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/cart-init.js"></script>
+    <script src="js/script.js"></script>
 </body>
 
 </html>
