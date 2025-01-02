@@ -267,6 +267,8 @@ footer {
 .review-card {
   background-color: var(--card-bg);
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  padding: 10px;
+  border-radius: 10px;
 }
 
 /* Theme toggle */
