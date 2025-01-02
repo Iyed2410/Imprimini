@@ -26,6 +26,8 @@
 
 body {
     min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
     background: var(--background-color);
     transition: var(--theme-transition);
 }
@@ -34,23 +36,18 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 80px);
-    padding: 20px;
+    height: calc(100vh - 80px);
+    position: relative;
 }
 
 .ring {
-    position: relative;
-    width: 500px;
-    height: 500px;
+    position: absolute;
+    width: 450px;
+    height: 450px;
     display: flex;
     justify-content: center;
     align-items: center;
     transition: all 0.5s ease-in-out;
-}
-
-.ring.expand {
-    width: 600px;
-    height: 600px;
 }
 
 .ring i {
@@ -111,7 +108,8 @@ body {
 }
 
 .login {
-    position: absolute;
+    position: relative;
+    z-index: 1;
     width: 90%;
     max-width: 400px;
     padding: 40px;
@@ -122,6 +120,11 @@ body {
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
 }
 
+.login.signup {
+    max-width: 380px;
+    padding: 30px;
+}
+
 .login h2 {
     color: var(--text-color);
     text-align: center;
@@ -129,9 +132,18 @@ body {
     margin-bottom: 30px;
 }
 
+.login.signup h2 {
+    font-size: 1.8em;
+    margin-bottom: 25px;
+}
+
 .inputBx {
     position: relative;
     margin-bottom: 20px;
+}
+
+.login.signup .inputBx {
+    margin-bottom: 15px;
 }
 
 .inputBx input {
@@ -146,35 +158,44 @@ body {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
+.login.signup .inputBx input {
+    padding: 12px 45px;
+    font-size: 15px;
+}
+
+.inputBx input[type="submit"] {
+    padding: 15px;
+    background: var(--primary-color);
+    color: #fff;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
 .inputBx input::placeholder {
     color: rgba(255, 255, 255, 0.5);
 }
 
+.inputBx span,
 .inputBx i {
     position: absolute;
     left: 15px;
     top: 50%;
     transform: translateY(-50%);
     color: var(--text-color);
+    font-size: 16px;
+    pointer-events: none;
 }
 
 .inputBx .toggle-password {
     left: auto;
     right: 15px;
     cursor: pointer;
+    pointer-events: all;
 }
 
-.inputBx input[type="submit"] {
-    background: var(--primary-color);
-    color: #fff;
-    padding: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-.inputBx input[type="submit"]:hover {
-    background: #ff1f6d;
+.password-input {
+    position: relative;
 }
 
 .remember-forgot {
