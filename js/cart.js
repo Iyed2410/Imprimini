@@ -17,6 +17,15 @@ class Cart {
         this.updateCartCount();
     }
 
+    // Update cart counter
+    updateCartCount() {
+        const cartCountElements = document.querySelectorAll('.cart-count');
+        const itemCount = this.items.reduce((total, item) => total + item.quantity, 0);
+        cartCountElements.forEach(element => {
+            element.textContent = itemCount;
+        });
+    }
+
     // Add item to cart
     addItem(item) {
         console.log('Adding item to cart:', item);
@@ -35,7 +44,13 @@ class Cart {
             item.quantity = 1;
         }
 
-        this.items.push(item);
+        const existingItem = this.items.find(i => i.cartId === item.cartId);
+        if (existingItem) {
+            existingItem.quantity += item.quantity;
+        } else {
+            this.items.push(item);
+        }
+
         this.saveCart();
         return true;
     }
@@ -53,7 +68,11 @@ class Cart {
         const item = this.items.find(item => item.cartId === cartId);
         if (item) {
             item.quantity = Math.max(1, parseInt(quantity) || 1);
-            this.saveCart();
+            if (item.quantity === 0) {
+                this.removeItem(cartId);
+            } else {
+                this.saveCart();
+            }
         }
     }
 
@@ -64,16 +83,6 @@ class Cart {
         }, 0);
         const shipping = this.items.length > 0 ? 7 : 0; // 7 DT shipping fee
         return subtotal + shipping;
-    }
-
-    // Update cart count in header
-    updateCartCount() {
-        const count = this.items.reduce((total, item) => total + item.quantity, 0);
-        const cartCount = document.querySelector('.cart-count');
-        if (cartCount) {
-            cartCount.textContent = count;
-            cartCount.style.display = count > 0 ? 'block' : 'none';
-        }
     }
 
     // Render cart items

@@ -4,7 +4,7 @@ const products = [
         id: 1,
         name: "Classic White T-Shirt",
         description: "Premium cotton t-shirt perfect for custom designs",
-        price: 19.99,
+        price: 20,
         image: "./img/product/product-1.jpg",
         category: "Clothing",
         colors: ["White", "Black", "Gray", "Navy"]
@@ -13,7 +13,7 @@ const products = [
         id: 2,
         name: "Black Hoodie",
         description: "Comfortable hoodie for all seasons",
-        price: 39.99,
+        price: 40,
         image: "./img/product/product-2.jpg",
         category: "Clothing",
         colors: ["Black", "Gray", "Navy"]
@@ -22,7 +22,7 @@ const products = [
         id: 3,
         name: "Ceramic Coffee Mug",
         description: "High-quality ceramic mug for your morning coffee",
-        price: 14.99,
+        price: 15,
         image: "./img/product/product-3.jpg",
         category: "Accessories",
         colors: ["White", "Black"]
@@ -31,7 +31,7 @@ const products = [
         id: 4,
         name: "Color Changing Mug",
         description: "Magic mug that reveals design when hot",
-        price: 19.99,
+        price: 20,
         image: "./img/product/product-4.jpg",
         category: "Accessories",
         colors: ["White", "Black"]
@@ -40,7 +40,7 @@ const products = [
         id: 5,
         name: "Premium Canvas Print",
         description: "High-quality canvas perfect for photos and artwork",
-        price: 39.99,
+        price: 40,
         image: "./img/product/product-5.jpg",
         category: "Home Decor",
         colors: ["White"]
@@ -49,7 +49,7 @@ const products = [
         id: 6,
         name: "Colored T-Shirt",
         description: "Vibrant colored t-shirt for bold designs",
-        price: 22.99,
+        price: 25,
         image: "./img/product/product-6.jpg",
         category: "Clothing",
         colors: ["Red", "Blue", "Green", "Yellow"]
@@ -58,7 +58,7 @@ const products = [
         id: 7,
         name: "Zip-Up Hoodie",
         description: "Classic zip-up hoodie with premium feel",
-        price: 44.99,
+        price: 45,
         image: "./img/product/product-7.jpg",
         category: "Clothing",
         colors: ["Black", "Gray", "Navy"]
@@ -67,7 +67,7 @@ const products = [
         id: 8,
         name: "Canvas Wall Art",
         description: "Gallery-quality canvas print for your walls",
-        price: 49.99,
+        price: 50,
         image: "./img/product/product-8.jpg",
         category: "Home Decor",
         colors: ["White"]
@@ -84,7 +84,7 @@ function renderProducts(productsToRender = products) {
     }
 
     productsContainer.innerHTML = productsToRender.map(product => `
-        <div class="product-card" data-aos="fade-up">
+        <div class="product-card" data-aos="fade-up" data-product-id="${product.id}">
             <div class="product-image">
                 <img src="${product.image}" alt="${product.name}" onerror="this.src='./img/product/product-1.jpg'">
                 <div class="product-overlay">
@@ -96,9 +96,9 @@ function renderProducts(productsToRender = products) {
                 </div>
             </div>
             <div class="product-info">
-                <h3>${product.name}</h3>
+                <h3 class="product-title">${product.name}</h3>
                 <p>${product.description}</p>
-                <p class="price">$${product.price.toFixed(2)}</p>
+                <p class="price">${product.price} DT</p>
                 <div class="product-colors">
                     ${product.colors.map(color => `
                         <span class="color-option" style="background-color: ${color.toLowerCase()}"></span>
