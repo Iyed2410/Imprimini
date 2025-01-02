@@ -127,7 +127,7 @@
 
 .product-info p {
     margin: 0 0 1rem 0;
-    color: var(--text-secondary);
+    color: var(--text-color);
     font-size: 0.9rem;
 }
 
@@ -175,7 +175,7 @@
 }
 
 .customize-btn {
-    background: white;
+    background: var(--background-color);
     color: var(--text-color);
 }
 

@@ -206,8 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Sort products
         const sortedProducts = products.sort((a, b) => {
-            const priceA = parseFloat(a.querySelector('.price').textContent.replace('$', ''));
-            const priceB = parseFloat(b.querySelector('.price').textContent.replace('$', ''));
+            const priceA = parseFloat(a.querySelector('.price').textContent.replace('DT', ''));
+            const priceB = parseFloat(b.querySelector('.price').textContent.replace('DT', ''));
             
             if (sortBy === 'price-low') {
                 return priceA - priceB;

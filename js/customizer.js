@@ -68,9 +68,85 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update product info
     document.getElementById('product-name').textContent = currentProduct.name;
     document.getElementById('product-description').textContent = currentProduct.description;
-    document.getElementById('product-price').textContent = currentProduct.price.toFixed(2);
+    document.getElementById('product-price').textContent = `${currentProduct.price} DT`;
 
-    // Load product image
+    // Initialize color options
+    if (currentProduct.colors && Array.isArray(currentProduct.colors)) {
+        const colorSwatches = document.querySelector('.color-swatches');
+        if (colorSwatches) {
+            colorSwatches.innerHTML = currentProduct.colors.map(color => `
+                <div class="color-swatch" 
+                     data-color="${typeof color === 'object' ? color.name : color}"
+                     data-image="${typeof color === 'object' ? color.image : ''}"
+                     style="background-image: url(${typeof color === 'object' ? color.image : ''})">
+                </div>
+            `).join('');
+
+            // Add click handlers for color swatches
+            const swatches = colorSwatches.querySelectorAll('.color-swatch');
+            swatches.forEach(swatch => {
+                swatch.addEventListener('click', function() {
+                    const imagePath = this.dataset.image;
+                    const colorName = this.dataset.color;
+                    
+                    // Update product image
+                    if (imagePath) {
+                        fabric.Image.fromURL(imagePath, function(img) {
+                            if (!img) {
+                                console.error('Failed to load product image');
+                                showNotification('Error: Failed to load product image');
+                                return;
+                            }
+
+                            // Scale image to fit canvas
+                            const scaleX = canvas.width / img.width;
+                            const scaleY = canvas.height / img.height;
+                            const scale = Math.min(scaleX, scaleY);
+
+                            img.scale(scale);
+                            img.set({
+                                left: (canvas.width - img.width * scale) / 2,
+                                top: (canvas.height - img.height * scale) / 2,
+                                selectable: false,
+                                evented: false,
+                                name: 'productImage'
+                            });
+
+                            // Remove old product image
+                            const oldImage = canvas.getObjects().find(obj => obj.name === 'productImage');
+                            if (oldImage) {
+                                canvas.remove(oldImage);
+                            }
+                            
+                            // Add new product image
+                            canvas.add(img);
+                            canvas.sendToBack(img);
+                            canvas.renderAll();
+                            
+                            showNotification(`Color changed to ${colorName}`);
+                        });
+                    }
+                    
+                    // Update active swatch
+                    swatches.forEach(s => s.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Set initial color as active
+            if (swatches.length > 0) {
+                swatches[0].classList.add('active');
+            }
+        }
+    } else {
+        // Hide color options if no colors available
+        const colorSection = document.getElementById('color-options');
+        if (colorSection) {
+            colorSection.style.display = 'none';
+        }
+    }
+
+    // Load initial product image
     console.log('Loading product image:', currentProduct.image);
     fabric.Image.fromURL(currentProduct.image, function(img) {
         if (!img) {
@@ -82,12 +158,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Scale image to fit entire canvas
         const scaleX = canvas.width / img.width;
         const scaleY = canvas.height / img.height;
-        const scale = Math.max(scaleX, scaleY);
+        const scale = Math.min(scaleX, scaleY);
 
         img.scale(scale);
         img.set({
-            left: 0,
-            top: 0,
+            left: (canvas.width - img.width * scale) / 2,
+            top: (canvas.height - img.height * scale) / 2,
             selectable: false,
             evented: false,
             name: 'productImage'

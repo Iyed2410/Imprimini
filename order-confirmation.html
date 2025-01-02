@@ -151,7 +151,7 @@
         document.getElementById('order-date').textContent = date.toLocaleDateString();
         
         // Get order amount from localStorage
-        const amount = localStorage.getItem('orderAmount') || '$0.00';
+        const amount = localStorage.getItem('orderAmount') || '0.00 DT';
         document.getElementById('order-amount').textContent = amount;
     </script>
 </body>
