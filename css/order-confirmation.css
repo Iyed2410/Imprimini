@@ -1,0 +1,148 @@
+.confirmation-page {
+    padding: 4rem 0;
+    min-height: calc(100vh - 200px);
+    background: var(--background-color);
+}
+
+.confirmation-box {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem;
+    background: var(--surface-color);
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.success-icon {
+    font-size: 5rem;
+    color: #28a745;
+    margin-bottom: 1.5rem;
+}
+
+.confirmation-box h1 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    font-size: 2.5rem;
+}
+
+.confirmation-box p {
+    color: var(--text-secondary-color);
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.order-info {
+    background: var(--background-color);
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+}
+
+.order-info h2 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+}
+
+.order-info p {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.order-info span {
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.next-steps {
+    text-align: left;
+    margin-bottom: 2rem;
+}
+
+.next-steps h3 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+}
+
+.next-steps ul {
+    list-style: none;
+    padding: 0;
+}
+
+.next-steps li {
+    margin: 1rem 0;
+    color: var(--text-secondary-color);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.next-steps i {
+    color: var(--accent-color);
+    font-size: 1.2rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.action-buttons a {
+    padding: 1rem 2rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.continue-shopping {
+    background: var(--accent-color);
+    color: white;
+}
+
+.continue-shopping:hover {
+    background: var(--accent-hover-color);
+}
+
+.view-order {
+    background: var(--background-color);
+    color: var(--text-color);
+    border: 2px solid var(--border-color);
+}
+
+.view-order:hover {
+    background: var(--border-color);
+}
+
+.contact-support {
+    border-top: 1px solid var(--border-color);
+    padding-top: 2rem;
+    margin-top: 2rem;
+}
+
+.contact-support p {
+    margin: 0.5rem 0;
+    color: var(--text-secondary-color);
+}
+
+.contact-support i {
+    color: var(--accent-color);
+    margin-right: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .confirmation-box {
+        padding: 2rem;
+        margin: 0 1rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .action-buttons a {
+        width: 100%;
+    }
+}

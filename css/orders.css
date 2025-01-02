@@ -1,0 +1,222 @@
+.orders-page {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.orders-container h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--text-color);
+}
+
+/* Order Search */
+.order-search {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    max-width: 500px;
+    margin: 0 auto 3rem;
+}
+
+.order-search input {
+    flex: 1;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--card-bg);
+    color: var(--text-color);
+}
+
+.order-search button {
+    padding: 0 1.5rem;
+    background: var(--primary-color);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.order-search button:hover {
+    background: var(--hover-color);
+}
+
+/* Order Cards */
+.order-cards {
+    display: grid;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.order-card {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.order-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.order-header h3 {
+    color: var(--text-color);
+    margin: 0;
+}
+
+.order-status {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.order-status.printing {
+    background: #ffd700;
+    color: #000;
+}
+
+.order-status.delivered {
+    background: #4CAF50;
+    color: white;
+}
+
+/* Progress Bar */
+.order-progress {
+    margin-bottom: 1.5rem;
+}
+
+.progress-bar {
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-color);
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+}
+
+.step.completed, .step.active {
+    opacity: 1;
+}
+
+.step i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.step span {
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+/* Order Details */
+.order-details {
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.order-details p {
+    margin-bottom: 0.5rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.view-details-btn, .reorder-btn, .review-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.view-details-btn {
+    background: var(--primary-color);
+    color: white;
+}
+
+.reorder-btn {
+    background: var(--secondary-color);
+    color: white;
+}
+
+.review-btn {
+    background: var(--card-bg);
+    border: 2px solid var(--primary-color);
+    color: var(--text-color);
+}
+
+.view-details-btn:hover, .reorder-btn:hover {
+    background: var(--hover-color);
+}
+
+.review-btn:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Section Headers */
+section h2 {
+    color: var(--text-color);
+    margin: 3rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .orders-page {
+        padding: 1rem;
+    }
+
+    .progress-steps {
+        display: none;
+    }
+
+    .order-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+}

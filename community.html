@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community - 3D Printing Hub</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/community.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    <div class="scroll-progress"></div>
+    
+    <header>
+        <div class="header-container">
+            <a href="./index.html"><div class="logo-container">
+                <img class="logo logo-light" src="./img/imprimini_white.png" alt="Logo Light">
+                <img class="logo logo-dark" src="./img/imprimini_black.png" alt="Logo Dark">
+            </div></a>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="./index.html">Home</a></li>
+                    <li><a href="./products.html">Products</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                    <li><a href="./about.html">About</a></li>
+                    <li><a href="./community.html">Community</a></li>
+                    <li class="account-item"><a href="./account.html"><i class="fas fa-user"></i> Account</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon">
+                <a href="./cart.html"><i class="fas fa-shopping-cart"></i></a>
+                <span class="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="community-page">
+        <!-- Featured Projects Section -->
+        <section class="featured-projects">
+            <h2>Featured Projects</h2>
+            <div class="project-grid">
+                <div class="project-card" data-aos="fade-up">
+                    <div class="project-image">
+                        <img src="https://via.placeholder.com/400x300" alt="Project Preview">
+                        <div class="project-overlay">
+                            <button class="like-btn"><i class="fas fa-heart"></i> 234</button>
+                            <button class="share-btn"><i class="fas fa-share"></i></button>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3>Custom Robot Design</h3>
+                        <p class="project-author">by <a href="#">John Maker</a></p>
+                        <div class="project-tags">
+                            <span>#robotics</span>
+                            <span>#custom</span>
+                            <span>#3dprinting</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- More project cards... -->
+            </div>
+        </section>
+
+        <!-- Community Challenge -->
+        <section class="community-challenge" data-aos="fade-up">
+            <div class="challenge-card">
+                <div class="challenge-header">
+                    <h2>Monthly Challenge</h2>
+                    <span class="challenge-timer">14 days left</span>
+                </div>
+                <div class="challenge-content">
+                    <h3>Design an Eco-Friendly Gadget</h3>
+                    <p>Create a useful gadget that promotes sustainability. The winning design will be featured and printed for free!</p>
+                    <div class="challenge-prizes">
+                        <div class="prize">
+                            <i class="fas fa-trophy gold"></i>
+                            <span>Free Printing</span>
+                        </div>
+                        <div class="prize">
+                            <i class="fas fa-trophy silver"></i>
+                            <span>50% Off</span>
+                        </div>
+                        <div class="prize">
+                            <i class="fas fa-trophy bronze"></i>
+                            <span>25% Off</span>
+                        </div>
+                    </div>
+                    <button class="participate-btn">Participate Now</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Community Feed -->
+        <section class="community-feed">
+            <div class="feed-header">
+                <h2>Community Feed</h2>
+                <div class="feed-filters">
+                    <button class="active">All</button>
+                    <button>Popular</button>
+                    <button>Recent</button>
+                    <button>Following</button>
+                </div>
+            </div>
+            <div class="feed-grid">
+                <!-- Feed Items -->
+                <div class="feed-item" data-aos="fade-up">
+                    <div class="feed-user">
+                        <img src="https://via.placeholder.com/50" alt="User Avatar">
+                        <div class="user-info">
+                            <h4>Sarah Designer</h4>
+                            <span>2 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="feed-content">
+                        <p>Just finished this awesome design! What do you think? 🚀</p>
+                        <div class="feed-images">
+                            <img src="https://via.placeholder.com/300x200" alt="Design Preview">
+                        </div>
+                        <div class="feed-actions">
+                            <button><i class="fas fa-heart"></i> 45</button>
+                            <button><i class="fas fa-comment"></i> 12</button>
+                            <button><i class="fas fa-share"></i> Share</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- More feed items... -->
+            </div>
+        </section>
+
+        <!-- Upload Project Button -->
+        <button class="upload-project-btn">
+            <i class="fas fa-plus"></i>
+            <span>Share Your Project</span>
+        </button>
+    </main>
+
+    <button class="theme-toggle">
+        <i class="fa-solid fa-moon"></i>
+    </button>
+
+    <!-- Upload Modal -->
+    <div class="upload-modal" id="uploadModal">
+        <div class="modal-content">
+            <h2>Share Your Project</h2>
+            <form id="uploadForm">
+                <div class="form-group">
+                    <label>Project Title</label>
+                    <input type="text" placeholder="Give your project a name">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea placeholder="Tell us about your project"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Upload Images</label>
+                    <div class="upload-area">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Drag and drop images here or click to browse</p>
+                        <input type="file" multiple accept="image/*">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Tags</label>
+                    <input type="text" placeholder="Add tags (separated by commas)">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="submit-btn">Share Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="./js/script.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            offset: 100,
+            once: true
+        });
+    </script>
+</body>
+</html>

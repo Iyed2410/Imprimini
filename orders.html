@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Tracking - Custom Printing</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/orders.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    <div class="scroll-progress"></div>
+    
+    <header>
+        <div class="header-container">
+            <a href="./index.html"><div class="logo-container">
+                <img class="logo logo-light" src="./img/imprimini_white.png" alt="Logo Light">
+                <img class="logo logo-dark" src="./img/imprimini_black.png" alt="Logo Dark">
+            </div></a>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="./index.html">Home</a></li>
+                    <li><a href="./products.html">Products</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                    <li><a href="./about.html">About</a></li>
+                    <li><a href="./orders.html">Orders</a></li>
+                    <li><a href="./community.html">Community</a></li>
+                    <li class="account-item"><a href="./account.html"><i class="fas fa-user"></i> Account</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon">
+                <a href="./cart.html"><i class="fas fa-shopping-cart"></i></a>
+                <span class="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="orders-page">
+        <div class="orders-container">
+            <h1>Order Tracking</h1>
+            
+            <!-- Order Search -->
+            <div class="order-search">
+                <input type="text" id="orderSearch" placeholder="Search by Order ID">
+                <button onclick="searchOrder()"><i class="fas fa-search"></i></button>
+            </div>
+
+            <!-- Active Orders -->
+            <section class="active-orders">
+                <h2>Active Orders</h2>
+                <div class="order-cards" id="activeOrders">
+                    <!-- Sample Order Card -->
+                    <div class="order-card" data-aos="fade-up">
+                        <div class="order-header">
+                            <h3>Order #12345</h3>
+                            <span class="order-status printing">Printing</span>
+                        </div>
+                        <div class="order-progress">
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 60%"></div>
+                            </div>
+                            <div class="progress-steps">
+                                <div class="step completed">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Order Placed</span>
+                                </div>
+                                <div class="step completed">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Processing</span>
+                                </div>
+                                <div class="step active">
+                                    <i class="fas fa-print"></i>
+                                    <span>Printing</span>
+                                </div>
+                                <div class="step">
+                                    <i class="fas fa-box"></i>
+                                    <span>Quality Check</span>
+                                </div>
+                                <div class="step">
+                                    <i class="fas fa-shipping-fast"></i>
+                                    <span>Shipping</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="order-details">
+                            <p><strong>Estimated Completion:</strong> 2 hours</p>
+                            <p><strong>Items:</strong> Custom Phone Case, 3D Printed Figurine</p>
+                            <button class="view-details-btn">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Order History -->
+            <section class="order-history">
+                <h2>Order History</h2>
+                <div class="order-cards" id="orderHistory">
+                    <!-- Sample Completed Order -->
+                    <div class="order-card completed" data-aos="fade-up">
+                        <div class="order-header">
+                            <h3>Order #12344</h3>
+                            <span class="order-status delivered">Delivered</span>
+                        </div>
+                        <div class="order-details">
+                            <p><strong>Completed:</strong> December 28, 2023</p>
+                            <p><strong>Items:</strong> Custom Keychains (x3)</p>
+                            <div class="action-buttons">
+                                <button class="reorder-btn">Reorder</button>
+                                <button class="review-btn">Write Review</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Us</h3>
+                    <p>Custom printing solutions for all your needs. Quality products, fast delivery.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="./index.html">Home</a></li>
+                        <li><a href="./products.html">Products</a></li>
+                        <li><a href="./contact.html">Contact</a></li>
+                        <li><a href="./about.html">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> info@customprinting.com</p>
+                    <p><i class="fas fa-phone"></i> (123) 456-7890</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Custom Printing. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <button class="theme-toggle">
+        <i class="fa-solid fa-moon"></i>
+    </button>
+
+    <script src="./js/script.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            offset: 100,
+            once: true
+        });
+    </script>
+</body>
+</html>

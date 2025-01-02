@@ -1,0 +1,189 @@
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Imprimini</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/checkout.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="./index.html"><div class="logo-container">
+                <img class="logo logo-light" src="./img/imprimini_white.png" alt="Logo Light">
+                <img class="logo logo-dark" src="./img/imprimini_black.png" alt="Logo Dark">
+            </div></a>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="./index.html">Home</a></li>
+                    <li><a href="./products.html">Products</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                    <li><a href="./about.html">About</a></li>
+                    <li><a href="./community.html">Community</a></li>
+                    <li class="account-item"><a href="./account.html"><i class="fas fa-user"></i> Account</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon">
+                <a href="./cart.html"><i class="fas fa-shopping-cart"></i></a>
+                <span class="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <main style="background-color: var(--background-color);">
+        <div class="checkout-container">
+            <div class="checkout-content">
+                <div class="order-summary">
+                    <h2>Order Summary</h2>
+                    <div class="summary-items">
+                        <!-- Items will be populated by JavaScript -->
+                    </div>
+                    <div class="summary-totals">
+                        <div class="subtotal">
+                            <span>Subtotal</span>
+                            <span class="amount">0.00 DT</span>
+                        </div>
+                        <div class="shipping">
+                            <span>Shipping</span>
+                            <span class="amount">7.00 DT</span>
+                        </div>
+                        <div class="total">
+                            <span>Total</span>
+                            <span class="amount">0.00 DT</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-section">
+                    <h2>Payment Details</h2>
+                    <div class="payment-form">
+                        <div class="form-group">
+                            <label>Card Number</label>
+                            <input type="text" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Card Holder Name</label>
+                            <input type="text" placeholder="Full Name">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label>Expiry Date</label>
+                                <input type="text" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            
+                            <div class="form-group half">
+                                <label>CVV</label>
+                                <input type="text" placeholder="123" maxlength="3">
+                            </div>
+                        </div>
+                        
+                        <button class="pay-button">Pay Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <button class="theme-toggle">
+        <i class="fa-solid fa-moon"></i>
+    </button>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Us</h3>
+                    <p>Custom printing solutions for all your needs. Quality products, fast delivery.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="./index.html">Home</a></li>
+                        <li><a href="./products.html">Products</a></li>
+                        <li><a href="./contact.html">Contact</a></li>
+                        <li><a href="./about.html">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> imprimini@gmail.com</p>
+                    <p><i class="fas fa-phone"></i> +216 27 819 182</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 <em>imprimini</em>. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./js/cart.js"></script>
+    <script src="./js/card-payment.js"></script>
+    <script src="./js/checkout.js"></script>
+    <script src="./js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            const body = document.body;
+            const icon = themeToggle.querySelector('i');
+            
+            // Function to toggle theme
+            function toggleTheme() {
+                body.classList.toggle('dark-mode');
+                updateIcon();
+                // Save theme preference
+                localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
+            }
+
+            // Function to update icon
+            function updateIcon() {
+                if (body.classList.contains('dark-mode')) {
+                    icon.className = 'fa-solid fa-sun';
+                } else {
+                    icon.className = 'fa-solid fa-moon';
+                }
+            }
+
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+                updateIcon();
+            }
+
+            // Add click event listener
+            themeToggle.addEventListener('click', toggleTheme);
+
+            // Check system preference
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+            if (!savedTheme && prefersDark.matches) {
+                body.classList.add('dark-mode');
+                updateIcon();
+            }
+
+            // Listen for system theme changes
+            prefersDark.addListener((e) => {
+                if (!localStorage.getItem('theme')) {
+                    if (e.matches) {
+                        body.classList.add('dark-mode');
+                    } else {
+                        body.classList.remove('dark-mode');
+                    }
+                    updateIcon();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

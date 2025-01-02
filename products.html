@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - Custom Printing</title>
+    <link rel="stylesheet" href="/Imprimini/css/styles.css">
+    <link rel="stylesheet" href="/Imprimini/css/products.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="/Imprimini/index.html"><div class="logo-container">
+                <img class="logo logo-light" src="/Imprimini/img/imprimini_white.png" alt="Logo Light">
+                <img class="logo logo-dark" src="/Imprimini/img/imprimini_black.png" alt="Logo Dark">
+            </div></a>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="/Imprimini/index.html">Home</a></li>
+                    <li><a href="/Imprimini/products.html">Products</a></li>
+                    <li><a href="/Imprimini/contact.html">Contact</a></li>
+                    <li><a href="/Imprimini/about.html">About</a></li>
+                    <li><a href="/Imprimini/community.html">Community</a></li>
+                    <li class="account-item"><a href="/Imprimini/account.html"><i class="fas fa-user"></i> Account</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon">
+                <a href="/Imprimini/cart.html"><i class="fas fa-shopping-cart"></i></a>
+                <span class="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="products-page">
+        <div class="filters-section">
+            <div class="filter-group">
+                <h3>Categories</h3>
+                <button class="filter-btn active" data-category="All">All</button>
+                <button class="filter-btn" data-category="Clothing">Clothing</button>
+                <button class="filter-btn" data-category="Accessories">Accessories</button>
+                <button class="filter-btn" data-category="Home Decor">Home Decor</button>
+            </div>
+            
+            <div class="sort-group">
+                <label for="sort-select">Sort by:</label>
+                <select id="sort-select">
+                    <option value="name">Name</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="products-grid">
+            <!-- Products will be rendered here by JavaScript -->
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Us</h3>
+                    <p>Custom printing solutions for all your needs. Quality products, fast delivery.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="/Imprimini/index.html">Home</a></li>
+                        <li><a href="/Imprimini/products.html">Products</a></li>
+                        <li><a href="/Imprimini/contact.html">Contact</a></li>
+                        <li><a href="/Imprimini/about.html">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> imprimini@gmail.com</p>
+                    <p><i class="fas fa-phone"></i> +216 27 819 182</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 <em>imprimini</em>. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <button class="theme-toggle">
+        <i class="fa-solid fa-moon"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="/Imprimini/js/cart.js"></script>
+    <script src="/Imprimini/js/products.js"></script>
+    <script src="/Imprimini/js/script.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+    </script>
+    <script>
+        // Initialize notification function
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

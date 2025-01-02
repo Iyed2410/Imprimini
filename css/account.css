@@ -1,0 +1,182 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Quicksand", sans-serif;
+}
+
+:root {
+  --background-color: #fff;
+  --text-color: #111;
+  --primary-color: #ff357a;
+  --secondary-color: #fff172;
+  --theme-transition: background-color 0.3s ease;
+}
+
+[data-theme="dark"] {
+  --background-color: #111;
+  --text-color: #fff;
+  --primary-color: #ff357a;
+  --secondary-color: #fff172;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--background-color);
+  width: 100%;
+  overflow: hidden;
+  transition: var(--theme-transition);
+}
+
+.ring {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.5s ease-in-out;
+}
+
+.ring.expand {
+  width: 600px;
+  height: 600px;
+}
+
+.ring i {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--text-color);
+  transition: 0.5s;
+}
+
+.ring i:nth-child(1) {
+  border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
+  animation: animate 6s linear infinite;
+}
+
+.ring i:nth-child(2) {
+  border-radius: 41% 44% 56% 59%/38% 62% 63% 37%;
+  animation: animate 4s linear infinite;
+}
+
+.ring i:nth-child(3) {
+  border-radius: 41% 44% 56% 59%/38% 62% 63% 37%;
+  animation: animate2 10s linear infinite;
+}
+
+.ring:hover i {
+  border: 6px solid var(--clr);
+  filter: drop-shadow(0 0 20px var(--clr));
+}
+
+.ring:hover i:nth-child(1) {
+  --clr: #0073ff;
+}
+
+.ring:hover i:nth-child(2) {
+  --clr: #ff0057;
+}
+
+.ring:hover i:nth-child(3) {
+  --clr: #fffd44;
+}
+
+@keyframes animate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes animate2 {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.login {
+  position: absolute;
+  width: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 1;
+  visibility: visible;
+  transition: all 0.3s ease-in-out;
+  transform: scale(1);
+}
+
+.login.hide {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.9);
+}
+
+.login h2 {
+  font-size: 2em;
+  color: var(--text-color);
+  text-transform: none;
+  font-weight: 500;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.login .inputBx {
+  position: relative;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.login .inputBx input {
+  position: relative;
+  width: 100%;
+  padding: 12px 20px;
+  background: transparent;
+  border: 2px solid var(--text-color);
+  border-radius: 40px;
+  font-size: 1.2em;
+  color: var(--text-color);
+  box-shadow: none;
+  outline: none;
+}
+
+.login .inputBx input[type="submit"] {
+  width: 100%;
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+  border: none;
+  cursor: pointer;
+  color: #fff;
+}
+
+.login .inputBx input::placeholder {
+  color: var(--text-color);
+  opacity: 0.5;
+}
+
+.login .links {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.login .links a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 0.9em;
+}

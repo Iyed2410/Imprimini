@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customize Product - Custom Printing</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/customizer.css">
+    <link rel="stylesheet" href="./css/notifications.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Dancing+Script&family=Pacifico&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    <div class="scroll-progress"></div>
+    
+    <header>
+        <div class="header-container">
+            <a href="./index.html"><div class="logo-container">
+                <img class="logo logo-light" src="./img/imprimini_white.png" alt="Logo Light">
+                <img class="logo logo-dark" src="./img/imprimini_black.png" alt="Logo Dark">
+            </div></a>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="./index.html">Home</a></li>
+                    <li><a href="./products.html">Products</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                    <li><a href="./about.html">About</a></li>
+                    <li><a href="./community.html">Community</a></li>
+                    <li class="account-item"><a href="./account.html"><i class="fas fa-user"></i> Account</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon">
+                <a href="./cart.html"><i class="fas fa-shopping-cart"></i></a>
+                <span class="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="customizer-page">
+        <div class="customizer-container">
+            <div class="product-info">
+                <h2 id="product-name">Loading product...</h2>
+                <p id="product-description"></p>
+                <p>Price: $<span id="product-price">0.00</span></p>
+            </div>
+
+            <div class="customizer-interface">
+                <div class="tools-panel">
+                    <div class="tool-section">
+                        <h3>Add Text</h3>
+                        <div class="tool-group">
+                            <input type="text" id="text-input" placeholder="Enter your text">
+                            <select id="font-family">
+                                <option value="Arial">Arial</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                                <option value="Helvetica">Helvetica</option>
+                                <option value="Verdana">Verdana</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Courier New">Courier New</option>
+                            </select>
+                            <div class="font-controls">
+                                <input type="number" id="font-size" value="20" min="8" max="72">
+                                <input type="color" id="text-color" value="#000000">
+                            </div>
+                            <button id="add-text" class="tool-button">Add Text</button>
+                        </div>
+                    </div>
+
+                    <div class="tool-section">
+                        <h3>Add Image</h3>
+                        <div class="tool-group">
+                            <input type="file" id="image-upload" accept="image/*">
+                            <label for="image-upload" class="file-upload-label">
+                                <i class="fas fa-upload"></i> Choose Image
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="tool-section">
+                        <h3>Actions</h3>
+                        <div class="tool-group">
+                            <button id="delete-selected" class="tool-button danger">
+                                <i class="fas fa-trash"></i> Delete Selected
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-panel">
+                    <canvas id="design-preview"></canvas>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button id="add-to-cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    Add to Cart
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Us</h3>
+                    <p>Custom printing solutions for all your needs. Quality products, fast delivery.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="./index.html">Home</a></li>
+                        <li><a href="./products.html">Products</a></li>
+                        <li><a href="./contact.html">Contact</a></li>
+                        <li><a href="./about.html">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> imprimini@gmail.com</p>
+                    <p><i class="fas fa-phone"></i> +216 27 819 182</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 <em>imprimini</em>. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <button class="theme-toggle">
+        <i class="fa-solid fa-moon"></i>
+    </button>
+
+    <!-- Scripts -->
+    <!-- Load Fabric.js first -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    
+    <!-- Load our data and utility scripts -->
+    <script src="./js/products.js"></script>
+    <script src="./js/cart.js"></script>
+    
+    <!-- Load the customizer script last -->
+    <script src="./js/customizer.js"></script>
+    
+    <!-- General site functionality -->
+    <script src="./js/script.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+    </script>
+    <script>
+        // Initialize notification function
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

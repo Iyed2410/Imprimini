@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - Custom Printing</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/order-confirmation.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="./index.html">
+                <div class="logo-container">
+                    <img class="logo logo-light" src="./img/imprimini_white.png" alt="Logo Light">
+                    <img class="logo logo-dark" src="./img/imprimini_black.png" alt="Logo Dark">
+                </div>
+            </a>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="./index.html">Home</a></li>
+                    <li><a href="./products.html">Products</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                    <li><a href="./about.html">About</a></li>
+                    <li><a href="./community.html">Community</a></li>
+                    <li class="account-item"><a href="./account.html"><i class="fas fa-user"></i> Account</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="confirmation-page">
+        <div class="container">
+            <div class="confirmation-box">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h1>Thank You for Your Order!</h1>
+                <p>Your order has been successfully placed and is being processed.</p>
+                
+                <div class="order-info">
+                    <h2>Order Details</h2>
+                    <p>Order Number: <span id="order-number"></span></p>
+                    <p>Order Date: <span id="order-date"></span></p>
+                    <p>Total Amount: <span id="order-amount"></span></p>
+                </div>
+
+                <div class="next-steps">
+                    <h3>What's Next?</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> You will receive an order confirmation email shortly.</li>
+                        <li><i class="fas fa-box"></i> We will notify you when your order ships.</li>
+                        <li><i class="fas fa-truck"></i> Expected delivery: 3-5 business days</li>
+                    </ul>
+                </div>
+
+                <div class="action-buttons">
+                    <a href="products.html" class="continue-shopping">Continue Shopping</a>
+                    <a href="account.html" class="view-order">View Order</a>
+                </div>
+
+                <div class="contact-support">
+                    <p>Need help? Contact our support team:</p>
+                    <p><i class="fas fa-envelope"></i> imprimini@gmail.com</p>
+                    <p><i class="fas fa-phone"></i> +216 27 819 182</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Us</h3>
+                    <p>Custom printing solutions for all your needs. Quality products, fast delivery.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="./index.html">Home</a></li>
+                        <li><a href="./products.html">Products</a></li>
+                        <li><a href="./contact.html">Contact</a></li>
+                        <li><a href="./about.html">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> imprimini@gmail.com</p>
+                    <p><i class="fas fa-phone"></i> +216 27 819 182</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 <em>imprimini</em>. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <button class="theme-toggle">
+        <i class="fa-solid fa-moon"></i>
+    </button>
+
+    <script src="./js/script.js"></script>
+    <script>
+        // Generate random order number
+        document.getElementById('order-number').textContent = '#' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        
+        // Set order date
+        const date = new Date();
+        document.getElementById('order-date').textContent = date.toLocaleDateString();
+        
+        // Get order amount from localStorage
+        const amount = localStorage.getItem('orderAmount') || '$0.00';
+        document.getElementById('order-amount').textContent = amount;
+    </script>
+</body>
+</html>
