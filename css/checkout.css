@@ -5,9 +5,19 @@
     padding: 20px;
 }
 
+.checkout-page {
+    position: relative;
+    z-index: 1;
+    min-height: calc(100vh - 160px);
+    background: var(--background-color);
+}
+
 .checkout-container {
+    position: relative;
+    z-index: 2;
     max-width: 1200px;
-    padding: 20px;
+    margin: 0 auto;
+    padding: 2rem;
 }
 
 .order-summary {

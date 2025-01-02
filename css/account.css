@@ -298,6 +298,21 @@ body {
     }
 }
 
+.account-page {
+    position: relative;
+    z-index: 1;
+    min-height: calc(100vh - 160px);
+    background: var(--background-color);
+}
+
+.account-container {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
 @media (max-width: 480px) {
     .login {
         width: 100%;

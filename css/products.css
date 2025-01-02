@@ -1,10 +1,15 @@
 .products-page {
-    padding: 2rem;
+    position: relative;
+    z-index: 1;
+    min-height: calc(100vh - 160px);
     max-width: 1200px;
-    margin: 6rem auto 0;
+    margin: 0 auto;
+    padding: 2rem;
 }
 
 .filters-section {
+    position: relative;
+    z-index: 2;
     display: flex;
     justify-content: space-between;
     align-items: center;
