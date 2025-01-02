@@ -5,7 +5,7 @@ const products = [
         name: "Classic T-Shirt",
         description: "Premium cotton t-shirt perfect for custom designs",
         price: 20,
-        image: "./img/product/02_Classic_Organic_Tee-T-shirt-CS1001-Optical_White.jpg",
+        image: "./img/product/01_Classic_Organic_Tee-T-shirt-CS1001-Deep_Black.jpg",
         category: "Clothing",
         colors: [
             {
@@ -54,7 +54,7 @@ const products = [
         description: "High-quality ceramic mug for your morning coffee",
         price: 15,
         image: "./img/product/Ceramic-Coffee-Mug.jpg",
-        category: "Accessories",
+        category: "Mugs",
         colors: [
             {
                 name: "White",
@@ -72,7 +72,7 @@ const products = [
         description: "Magic mug that reveals design when hot",
         price: 20,
         image: "./img/product/product-4.jpg",
-        category: "Accessories",
+        category: "Mugs",
         colors: []
     },
     {
@@ -193,7 +193,7 @@ const products = [
         description: "Premium Merino wool hat for ultimate comfort and style",
         price: 45,
         image: "./img/product/04_Merino_Wool_Hat-Hat-CS5085-Scarlet_Red_01df4d62-f2e6-4fed-b0ae-231ad1fa657d.jpg",
-        category: "Accessories",
+        category: "Clothing",
         colors: [
             {
                 name: "Scarlet Red",
