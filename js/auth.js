@@ -1,7 +1,53 @@
+// Function to show notification
+function showNotification(message, type = 'success') {
+    const notification = document.getElementById('notification');
+    const messageElement = document.getElementById('notificationMessage');
+    
+    messageElement.textContent = message;
+    notification.className = `notification ${type}`;
+    notification.style.display = 'flex';
+    
+    setTimeout(() => {
+        notification.style.display = 'none';
+    }, 3000);
+}
+
+// Function to validate password strength
+function validatePassword(password) {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    if (password.length < minLength) {
+        return 'Password must be at least 8 characters long';
+    }
+    if (!hasUpperCase || !hasLowerCase) {
+        return 'Password must contain both uppercase and lowercase letters';
+    }
+    if (!hasNumbers) {
+        return 'Password must contain at least one number';
+    }
+    if (!hasSpecialChar) {
+        return 'Password must contain at least one special character';
+    }
+    return '';
+}
+
+// Function to validate email format
+function validateEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
 // Function to handle form toggle between login and signup
 function toggleForm(formType) {
     const loginForm = document.getElementById('loginForm');
     const signupForm = document.getElementById('signupForm');
+    const ring = document.querySelector('.ring');
+    
+    ring.classList.toggle('expand', formType === 'signup');
     
     if (formType === 'login') {
         loginForm.style.display = 'block';
@@ -12,13 +58,26 @@ function toggleForm(formType) {
     }
 }
 
+// Function to toggle password visibility
+function togglePasswordVisibility(input, icon) {
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
 // Function to handle login
 function handleLogin(event) {
     event.preventDefault();
     
-    const loginForm = document.getElementById('loginForm');
-    const username = loginForm.querySelector('input[type="text"]').value;
-    const password = loginForm.querySelector('input[type="password"]').value;
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+    const rememberMe = document.getElementById('rememberMe').checked;
 
     // Here you would typically validate against a backend
     // For demo purposes, we'll just check if fields are not empty
@@ -26,11 +85,16 @@ function handleLogin(event) {
         // Store login state
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('username', username);
+        if (rememberMe) {
+            localStorage.setItem('rememberMe', 'true');
+        }
         
-        // Redirect to index page
-        window.location.href = './index.html';
+        showNotification('Login successful! Redirecting...');
+        setTimeout(() => {
+            window.location.href = './index.html';
+        }, 1500);
     } else {
-        alert('Please fill in all fields');
+        showNotification('Please fill in all fields', 'error');
     }
 }
 
@@ -38,29 +102,39 @@ function handleLogin(event) {
 function handleSignup(event) {
     event.preventDefault();
     
-    const signupForm = document.getElementById('signupForm');
-    const username = signupForm.querySelector('input[type="text"]').value;
-    const email = signupForm.querySelector('input[type="email"]').value;
-    const password = signupForm.querySelectorAll('input[type="password"]')[0].value;
-    const confirmPassword = signupForm.querySelectorAll('input[type="password"]')[1].value;
+    const username = document.getElementById('signupUsername').value;
+    const email = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
+    const confirmPassword = document.getElementById('signupConfirmPassword').value;
 
-    // Basic validation
-    if (username && email && password && confirmPassword) {
-        if (password !== confirmPassword) {
-            alert('Passwords do not match');
-            return;
-        }
-
-        // Store user data (in real app, this would be sent to a backend)
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('username', username);
-        localStorage.setItem('email', email);
-
-        // Redirect to index page
-        window.location.href = './index.html';
-    } else {
-        alert('Please fill in all fields');
+    // Validate email format
+    if (!validateEmail(email)) {
+        showNotification('Please enter a valid email address', 'error');
+        return;
     }
+
+    // Validate password strength
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+        showNotification(passwordError, 'error');
+        return;
+    }
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+        showNotification('Passwords do not match', 'error');
+        return;
+    }
+
+    // Store user data (in real app, this would be sent to a backend)
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('username', username);
+    localStorage.setItem('email', email);
+
+    showNotification('Account created successfully! Redirecting...');
+    setTimeout(() => {
+        window.location.href = './index.html';
+    }, 1500);
 }
 
 // Function to handle logout
@@ -68,20 +142,27 @@ function handleLogout() {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('username');
     localStorage.removeItem('email');
-    window.location.href = './index.html';
+    localStorage.removeItem('rememberMe');
+    
+    showNotification('Logged out successfully');
+    setTimeout(() => {
+        window.location.href = './index.html';
+    }, 1500);
 }
 
 // Function to check login status and update UI
 function checkLoginStatus() {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
+    
+    // If user is logged in and tries to access account page, redirect to index
     if (isLoggedIn === 'true' && window.location.pathname.includes('account.html')) {
-        // If user is already logged in and tries to access account page, redirect to index
         window.location.href = './index.html';
+        return;
     }
 
     // Update account link with username if logged in
-    const username = localStorage.getItem('username');
     const accountListItem = document.querySelector('.navbar ul li:last-child');
+    const username = localStorage.getItem('username');
     
     if (isLoggedIn === 'true' && accountListItem) {
         accountListItem.innerHTML = `
@@ -92,12 +173,11 @@ function checkLoginStatus() {
                 </div>
                 <div class="dropdown-content">
                     <a href="./orders.html"><i class="fas fa-box"></i> My Orders</a>
+                    <a href="./account-settings.html"><i class="fas fa-cog"></i> Settings</a>
                     <div class="divider"></div>
                     <a href="#" onclick="handleLogout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </div>`;
-    } else if (accountListItem) {
-        accountListItem.innerHTML = `<a href="./account.html"><i class="fas fa-user"></i> Account</a>`;
     }
 }
 
@@ -105,13 +185,22 @@ function checkLoginStatus() {
 document.addEventListener('DOMContentLoaded', function() {
     checkLoginStatus();
 
-    const loginForm = document.getElementById('loginForm');
-    const signupForm = document.getElementById('signupForm');
+    // Add password toggle functionality
+    document.querySelectorAll('.password-input').forEach(container => {
+        const input = container.querySelector('input[type="password"]');
+        const toggleIcon = container.querySelector('.toggle-password');
+        
+        if (toggleIcon) {
+            toggleIcon.addEventListener('click', () => togglePasswordVisibility(input, toggleIcon));
+        }
+    });
 
-    if (loginForm) {
-        loginForm.querySelector('input[type="submit"]').addEventListener('click', handleLogin);
-    }
-    if (signupForm) {
-        signupForm.querySelector('input[type="submit"]').addEventListener('click', handleSignup);
+    // Remember me functionality
+    const rememberMe = localStorage.getItem('rememberMe');
+    if (rememberMe === 'true') {
+        const rememberMeCheckbox = document.getElementById('rememberMe');
+        if (rememberMeCheckbox) {
+            rememberMeCheckbox.checked = true;
+        }
     }
 });

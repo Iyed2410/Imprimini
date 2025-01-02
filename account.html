@@ -7,60 +7,27 @@
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.9/css/unicons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <title>Account</title>
+    <title>Account - Imprimini</title>
   </head>
   <body>
-    <div class="ring">
-      <i></i>
-      <i></i>
-      <i></i>
-      <!-- Login Form -->
-      <div class="login" id="loginForm">
-        <h2>Login</h2>
-        <form onsubmit="return false;">
-          <div class="inputBx">
-            <input type="text" placeholder="Username" required>
-          </div>
-          <div class="inputBx">
-            <input type="password" placeholder="Password" required>
-          </div>
-          <div class="inputBx">
-            <input type="submit" value="Sign in">
-          </div>
-          <div class="links">
-            <a href="#">Forget Password</a>
-            <a href="#" onclick="toggleForm('signup'); return false;">Signup</a>
-          </div>
-        </form>
-      </div>
-      <!-- Signup Form -->
-      <div class="login" id="signupForm" style="display: none;">
-        <h2>Sign Up</h2>
-        <form onsubmit="return false;">
-          <div class="inputBx">
-            <input type="text" placeholder="Username" required>
-          </div>
-          <div class="inputBx">
-            <input type="email" placeholder="Email" required>
-          </div>
-          <div class="inputBx">
-            <input type="password" placeholder="Password" required>
-          </div>
-          <div class="inputBx">
-            <input type="password" placeholder="Confirm Password" required>
-          </div>
-          <div class="inputBx">
-            <input type="submit" value="Sign up">
-          </div>
-          <div class="links">
-            <a href="#" onclick="toggleForm('login'); return false;">Already have an account? Login</a>
-          </div>
-        </form>
-      </div>
-    </div>
-
     <header>
-        <div class="header-content">
+        <div class="header-container">
+            <a href="index.html">
+                <div class="logo-container">
+                    <img class="logo logo-light" src="img/imprimini_white.png" alt="Logo Light">
+                    <img class="logo logo-dark" src="img/imprimini_black.png" alt="Logo Dark">
+                </div>
+            </a>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="community.html">Community</a></li>
+                    <li class="account-item"><a href="account.html"><i class="fas fa-user"></i> Account</a></li>
+                </ul>
+            </nav>
             <div class="cart-icon">
                 <a href="cart.html"><i class="fas fa-shopping-cart"></i></a>
                 <span class="cart-count">0</span>
@@ -72,47 +39,85 @@
     </header>
     <div class="mobile-menu-overlay"></div>
 
+    <main class="auth-container">
+        <div class="ring">
+            <i></i>
+            <i></i>
+            <i></i>
+            <!-- Login Form -->
+            <div class="login" id="loginForm">
+                <h2>Welcome Back</h2>
+                <form id="loginFormElement" onsubmit="handleLogin(event)">
+                    <div class="inputBx">
+                        <input type="text" id="loginUsername" placeholder="Username" required>
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="inputBx password-input">
+                        <input type="password" id="loginPassword" placeholder="Password" required>
+                        <i class="fas fa-lock"></i>
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                    <div class="remember-forgot">
+                        <label>
+                            <input type="checkbox" id="rememberMe">
+                            Remember me
+                        </label>
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                    </div>
+                    <div class="inputBx">
+                        <input type="submit" value="Login">
+                    </div>
+                    <p class="signup-text">Don't have an account? <a href="#" onclick="toggleForm('signup'); return false;">Sign up</a></p>
+                </form>
+            </div>
+
+            <!-- Signup Form -->
+            <div class="login signup" id="signupForm" style="display: none;">
+                <h2>Create Account</h2>
+                <form id="signupFormElement" onsubmit="handleSignup(event)">
+                    <div class="inputBx">
+                        <input type="text" id="signupUsername" placeholder="Username" required>
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="inputBx">
+                        <input type="email" id="signupEmail" placeholder="Email" required>
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="inputBx password-input">
+                        <input type="password" id="signupPassword" placeholder="Password" required>
+                        <i class="fas fa-lock"></i>
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                    <div class="inputBx password-input">
+                        <input type="password" id="signupConfirmPassword" placeholder="Confirm Password" required>
+                        <i class="fas fa-lock"></i>
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                    <div class="terms">
+                        <label>
+                            <input type="checkbox" required>
+                            I agree to the <a href="#">Terms & Conditions</a>
+                        </label>
+                    </div>
+                    <div class="inputBx">
+                        <input type="submit" value="Create Account">
+                    </div>
+                    <p class="login-text">Already have an account? <a href="#" onclick="toggleForm('login'); return false;">Login</a></p>
+                </form>
+            </div>
+        </div>
+    </main>
+
     <button class="theme-toggle">
-      <i class="fa-solid fa-moon"></i>
+        <i class="fa-solid fa-moon"></i>
     </button>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationMessage"></span>
+    </div>
 
     <script src="js/auth.js"></script>
     <script src="js/script.js"></script>
-
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>About Us</h3>
-                    <p>Custom printing solutions for all your needs. Quality products, fast delivery.</p>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="./index.html">Home</a></li>
-                        <li><a href="./products.html">Products</a></li>
-                        <li><a href="./contact.html">Contact</a></li>
-                        <li><a href="./about.html">About</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Contact Us</h3>
-                    <p><i class="fas fa-envelope"></i> imprimini@gmail.com</p>
-                    <p><i class="fas fa-phone"></i> +216 27 819 182</p>
-                </div>
-                <div class="footer-section">
-                    <h3>Follow Us</h3>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-whatsapp"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 <em>imprimini</em>. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
   </body>
 </html>
