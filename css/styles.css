@@ -175,6 +175,7 @@ main {
   min-height: calc(100vh - 160px); /* Adjust for header and footer height */
 }
 
+
 /* Sections */
 section {
   position: relative;
@@ -409,21 +410,33 @@ body.dark-mode .hero-section::before {
   background-color: var(--background-color);
 }
 
+.products-section .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.products-grid-test {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 2rem;
+  padding: 2rem 0;
+}
+
+.product-card {
+  flex: 1;
+  max-width: 350px;
+  margin: 0;
+  position: relative;
+}
+
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 1rem;
   max-width: 1000px;
-  margin: 0 auto;
-  perspective: none;
-  transform-style: flat;
-}
-
-.products-grid-test {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-  max-width: 250px;
   margin: 0 auto;
   perspective: none;
   transform-style: flat;
@@ -496,6 +509,26 @@ body.dark-mode .hero-section::before {
 
 .add-to-cart:hover {
   background-color: var(--hover-color);
+}
+
+.add-to-cart-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  animation: fadeInOut 2s ease-in-out;
+  z-index: 1000;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 /* Services Section */

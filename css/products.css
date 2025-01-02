@@ -67,6 +67,18 @@
     padding: 1rem;
 }
 
+.products-grid-test {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.products-grid-test .product-card {
+    flex: 0 1 calc(33.333% - 2rem);
+    max-width: 350px;
+}
+
 .product-card {
     background-color: var(--background-color);
     border-radius: 8px;

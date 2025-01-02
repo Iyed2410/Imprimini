@@ -99,9 +99,25 @@
             <div class="container">
                 <h2 class="section-title">Our Featured Products</h2>
                 <div class="products-grid-test">
-                    <div class="product-card" data-category="mugs">
+                    <div class="product-card" data-category="clothing" data-id="hoodie" data-price="40.00" data-image="img/product/04_Organic_Oversized_Hood-Oversized_Hoodie-CS1015-Deep_Black.jpg">
                         <div class="product-image">
-                            <img src="img/product/product-1.jpg" alt="Custom Mug">
+                            <img src="img/product/04_Organic_Oversized_Hood-Oversized_Hoodie-CS1015-Deep_Black.jpg" alt="Hoodie">
+                            <div class="product-overlay">
+                                <button class="add-to-cart">Add to Cart</button>
+                                <button class="view-details">View Details</button>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <h3>Hoodie</h3>
+                            <p>Comfortable hoodie for all seasons</p>
+                            <div class="product-price">40.00 DT</div>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-category="mugs" data-id="custom-mug" data-price="14.99" data-image="img/product/Ceramic-Coffee-Mug.jpg">
+                        <div class="product-image">
+                            <img src="img/product/Ceramic-Coffee-Mug.jpg" alt="Custom Mug">
                             <div class="product-overlay">
                                 <button class="add-to-cart">Add to Cart</button>
                                 <button class="view-details">View Details</button>
@@ -110,7 +126,23 @@
                         <div class="product-info">
                             <h3>Custom Mug</h3>
                             <p>Personalized ceramic mug</p>
-                            <div class="product-price">$14.99</div>
+                            <div class="product-price">14.99 DT</div>
+                            <button class="add-to-cart">Add to Cart</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card" data-category="clothing" data-id="classic-white-t-shirt" data-price="20.00" data-image="img/product/02_Classic_Organic_Tee-T-shirt-CS1001-Optical_White.jpg">
+                        <div class="product-image">
+                            <img src="img/product/02_Classic_Organic_Tee-T-shirt-CS1001-Optical_White.jpg" alt="Classic White T-Shirt">
+                            <div class="product-overlay">
+                                <button class="add-to-cart">Add to Cart</button>
+                                <button class="view-details">View Details</button>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <h3>Classic White T-Shirt</h3>
+                            <p>Premium cotton t-shirt perfect for custom designs</p>
+                            <div class="product-price">20.00 DT</div>
                             <button class="add-to-cart">Add to Cart</button>
                         </div>
                     </div>
@@ -159,9 +191,35 @@
     <script src="js/login-check.js"></script>
     <script src="js/script.js"></script>
     <script src="js/account.js"></script>
+    <script src="js/cart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             updateAccountDisplay();
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add click event listeners to all "Add to Cart" buttons
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const productCard = e.target.closest('.product-card');
+                    const product = {
+                        id: productCard.dataset.category + '-' + Date.now(),
+                        name: productCard.querySelector('h3').textContent,
+                        price: parseFloat(productCard.querySelector('.product-price').textContent),
+                        image: productCard.querySelector('.product-image img').src,
+                        quantity: 1
+                    };
+                    cart.addItem(product);
+                    
+                    // Show confirmation message
+                    const message = document.createElement('div');
+                    message.className = 'add-to-cart-message';
+                    message.textContent = 'Added to cart!';
+                    productCard.appendChild(message);
+                    setTimeout(() => message.remove(), 2000);
+                });
+            });
         });
     </script>
 </body>

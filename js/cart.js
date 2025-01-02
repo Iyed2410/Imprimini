@@ -180,7 +180,7 @@ class Cart {
                         <input type="number" class="quantity-input" value="${item.quantity}" min="1" max="99">
                         <button class="quantity-btn plus">+</button>
                     </div>
-                    <p class="item-price">$${(item.price * item.quantity).toFixed(2)}</p>
+                    <p class="item-price">${(item.price * item.quantity).toFixed(2)} DT</p>
                 </div>
                 <button class="remove-item"><i class="fas fa-trash"></i></button>
             </div>
