@@ -2,7 +2,7 @@
 const products = [
     {
         id: 1,
-        name: "Classic White T-Shirt",
+        name: "Classic T-Shirt",
         description: "Premium cotton t-shirt perfect for custom designs",
         price: 20,
         image: "./img/product/02_Classic_Organic_Tee-T-shirt-CS1001-Optical_White.jpg",

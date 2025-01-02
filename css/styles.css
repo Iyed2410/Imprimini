@@ -175,7 +175,6 @@ main {
   min-height: calc(100vh - 160px); /* Adjust for header and footer height */
 }
 
-
 /* Sections */
 section {
   position: relative;
@@ -997,4 +996,72 @@ body.dark-mode .dropdown-content a:hover {
   justify-content: center;
   align-items: center;
   font-weight: bold;
+}
+
+/* Responsive styles for products section */
+@media screen and (max-width: 768px) {
+  .products-grid-test {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 1rem;
+  }
+
+  .products-grid-test .product-card {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  .product-card .product-image img {
+    width: 100%;
+    height: auto;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .product-info h3 {
+    font-size: 1.2rem;
+  }
+
+  .product-info p {
+    font-size: 0.9rem;
+  }
+
+  .product-price {
+    font-size: 1.1rem;
+  }
+
+  .add-to-cart, .view-details {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Additional styles for very small screens */
+@media screen and (max-width: 480px) {
+  .products-grid-test .product-card {
+    max-width: 280px;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    padding: 0 1rem;
+  }
+
+  .product-overlay button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Checkout page styles */
+.checkout-item img {
+  max-width: 200px;
+  height: auto;
+  object-fit: contain;
 }

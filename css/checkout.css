@@ -311,6 +311,13 @@
     font-weight: bold;
 }
 
+.order-summary img {
+    max-width: 200px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
 main {
     background-color: var(--background-color);
     min-height: 100vh;
