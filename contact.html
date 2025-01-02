@@ -25,12 +25,31 @@
                     <li><a href="contact.html">Contact</a></li>
                     <li><a href="about.html">About</a></li>
                     <li><a href="community.html">Community</a></li>
-                    <li class="account-item"><a href="account.html"><i class="fas fa-user"></i> Account</a></li>
+                    <li class="account-item">
+                        <a href="#" class="account-link"><i class="fas fa-user"></i> Account</a>
+                        <div class="account-dropdown">
+                            <div class="dropdown-header">
+                                <span class="user-name">Not logged in</span>
+                            </div>
+                            <div class="dropdown-content">
+                                <div class="logged-out-content">
+                                    <a href="account.html" class="login-link"><i class="fas fa-sign-in-alt"></i> Login</a>
+                                </div>
+                                <div class="logged-in-content" style="display: none;">
+                                    <a href="account-settings.html"><i class="fas fa-cog"></i> Settings</a>
+                                    <a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a>
+                                    <a href="#" onclick="handleLogout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
             </nav>
-            <div class="cart-icon">
-                <a href="cart.html"><i class="fas fa-shopping-cart"></i></a>
-                <span class="cart-count">0</span>
+            <div class="cart-icon" onclick="window.location.href='cart.html'" data-count="0"></div>
+            <div class="theme-switch-wrapper">
+                <button class="theme-toggle">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
             </div>
             <button class="mobile-menu-btn">
                 <i class="fas fa-bars"></i>
@@ -145,11 +164,13 @@
         </div>
     </footer>
 
-    <button class="theme-toggle">
-        <i class="fas fa-moon"></i>
-    </button>
-
     <script src="js/script.js"></script>
-    <script src="js/contact.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/account.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAccountDisplay();
+        });
+    </script>
 </body>
 </html>

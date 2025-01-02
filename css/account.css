@@ -40,6 +40,14 @@ body {
     position: relative;
 }
 
+.auth-forms {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 450px;
+}
+
 .ring {
     position: absolute;
     width: 450px;
@@ -118,11 +126,31 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 20px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 }
 
 .login.signup {
-    max-width: 380px;
-    padding: 30px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.login.signup.show {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    animation: formShow 0.3s ease forwards;
+}
+
+.login.hide {
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, -50%) scale(0.8);
+    animation: formHide 0.3s ease forwards;
 }
 
 .login h2 {
@@ -133,7 +161,6 @@ body {
 }
 
 .login.signup h2 {
-    font-size: 1.8em;
     margin-bottom: 25px;
 }
 
@@ -311,6 +338,195 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
+}
+
+.user-dashboard {
+    background: var(--background-color);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.dashboard-header h2 {
+    color: var(--text-color);
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-header p {
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.dashboard-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.dashboard-section {
+    background: var(--background-color);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-section h3 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.settings-btn, .logout-btn {
+    width: 100%;
+    padding: 0.8rem;
+    margin: 0.5rem 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.settings-btn {
+    background: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--primary-color);
+}
+
+.settings-btn:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.logout-btn {
+    background: #ff3b3b;
+    color: white;
+}
+
+.logout-btn:hover {
+    background: #ff1f1f;
+}
+
+.settings-btn i, .logout-btn i {
+    font-size: 1.1rem;
+}
+
+@keyframes formShow {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes formHide {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+}
+
+/* Settings Page Styles */
+.settings-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.settings-content {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.settings-content h1 {
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 2em;
+}
+
+.settings-section {
+    margin-bottom: 40px;
+}
+
+.settings-section h2 {
+    color: var(--text-color);
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.settings-form .form-group {
+    margin-bottom: 20px;
+}
+
+.settings-form label {
+    display: block;
+    color: var(--text-color);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.settings-form input {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: var(--text-color);
+    font-size: 16px;
+}
+
+.settings-form input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.settings-form input[readonly] {
+    background: rgba(255, 255, 255, 0.05);
+    cursor: not-allowed;
+}
+
+.settings-form .btn {
+    background: var(--primary-color);
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+.settings-form .btn:hover {
+    background: #ff2c50;
 }
 
 @media (max-width: 480px) {

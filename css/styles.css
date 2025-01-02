@@ -718,6 +718,66 @@ body.dark-mode .dropdown-content a:hover {
   background-color: var(--card-bg);
 }
 
+/* Account Dropdown Styles */
+.account-item {
+  position: relative;
+}
+
+.account-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 200px;
+  background: var(--background-color);
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.account-item:hover .account-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-name {
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.dropdown-content {
+  padding: 8px 0;
+}
+
+.dropdown-content a {
+  display: flex !important;
+  align-items: center;
+  padding: 8px 16px !important;
+  color: var(--text-color) !important;
+  transition: background-color 0.2s ease;
+  font-size: 0.9rem !important;
+}
+
+.dropdown-content a i {
+  margin-right: 8px;
+  width: 16px;
+  text-align: center;
+}
+
+.dropdown-content a:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 /* Mobile Menu Button */
 .mobile-menu-btn {
   display: none;
@@ -872,4 +932,36 @@ body.dark-mode .dropdown-content a:hover {
   .product-image img {
     height: 200px;
   }
+}
+
+.cart-icon {
+  position: relative;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.cart-icon::before {
+  content: '\f07a';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-size: 1.5em;
+  color: var(--text-color);
+  transition: color 0.3s ease;
+}
+
+.cart-icon::after {
+  content: attr(data-count);
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--primary-color);
+  color: white;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
 }

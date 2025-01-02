@@ -87,13 +87,9 @@ git clone https://github.com/yourusername/printing.git
 
 2. Open `index.html` in your web browser to view the website locally.
 
-## 📱 Screenshots
-
-[Add screenshots of your website here]
-
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](link-to-issues).
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/Iyed2410/Imprimini/issues).
 
 ## 📄 License
 
@@ -101,9 +97,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-- Website: [Your Website URL]
-- Email: contact@customprinting.com
-- Phone: +1-555-0123
+- Website: https://iyed2410.github.io/Imprimini/
+- Email: iyedkolsi123@gmail.com
+- Phone: +216-21-457-407
 
 ## 🙏 Acknowledgments
 
@@ -112,4 +108,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - All contributors who have helped with the project
 
 ---
-Made with ❤️ by [Your Name]
+Made with ❤️ by [Iyed Kolsi](https://iyed2410.github.io/Imprimini/)
