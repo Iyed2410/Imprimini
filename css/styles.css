@@ -746,7 +746,6 @@ body.dark-mode .hero-section::before {
 .user-dropdown .dropdown-content {
   display: none;
   position: absolute;
-  right: 0;
   background-color: var(--background-color);
   min-width: 160px;
   box-shadow: 0 8px 16px rgba(0,0,0,0.2);
@@ -882,6 +881,14 @@ body.dark-mode .dropdown-content a:hover {
 }
 
 @media screen and (max-width: 768px) {
+  .account-dropdown {
+    position: absolute;
+    top: 100%;
+    width: 200px;
+    background: var(--background-color);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
   .mobile-menu-btn {
     display: block;
     position: relative;
@@ -891,15 +898,23 @@ body.dark-mode .dropdown-content a:hover {
   .navbar {
     position: fixed;
     top: 0;
-    right: -100%;
+    right: -120%;  /* Changed from -100% to -120% */
     width: 70%;
     height: 100%;
-    background-color: var(--background-color);
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     padding: 80px 20px 20px;
-    transition: 0.3s;
+    transition: 0.3s ease-in-out;
     z-index: 999;
     overflow-y: auto;
-  }
+    border-left: 1px solid var(--border-color);
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode .navbar {
+    background-color: rgba(17, 17, 17, 0.264);
+}
 
   .navbar.active {
     right: 0;
