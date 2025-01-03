@@ -106,7 +106,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Contact
 
 - Website: https://iyed2410.github.io/Imprimini/
-- Email: [e-mail-me](iyedkolsi123@gmail.com)
+- Email: [e-mail-me](mailto:iyedkolsi123@gmail.com)
 - Phone: +216-21-457-407
 
 ## 🙏 Acknowledgments
