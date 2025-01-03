@@ -26,10 +26,10 @@
 /* Customizer Interface Layout */
 .customizer-interface {
     display: flex;
-    gap: 20px;
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
+    justify-content: space-evenly;
 }
 
 /* Tools Panel Styles */
@@ -42,14 +42,15 @@
 }
 
 .canvas-container {
-    flex: 1;
+    position: relative;
     background: var(--card-bg);
     border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 500px;
-    position: relative;
+    width: 100%;
+    margin: 10px;
 }
 
 #customization-canvas {
@@ -258,27 +259,21 @@ input[type="file"] {
 
 /* Preview Panel Styles */
 .preview-panel {
-    flex: 1;
+    position: relative;
     background: var(--card-bg);
     border-radius: 8px;
-    padding: 20px;
-    display: flex;
+    padding: 10px;
+    width: auto;
+    min-height: 500px;
     justify-content: center;
     align-items: center;
-    min-height: 500px;
-    position: relative;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 #customization-canvas {
     max-width: 100%;
     max-height: 100%;
-    background: transparent;
-}
-
-.canvas-container {
-    margin: 0 auto;
-    background: transparent;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* Actions Section */
@@ -334,104 +329,41 @@ input[type="file"] {
     to { transform: rotate(360deg); }
 }
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
     .customizer-interface {
-        display: flex;
         flex-direction: column;
-        gap: 1rem;
-        padding: 1rem;
+        padding: 10px;
     }
 
     .tools-panel {
+        flex: none;
         width: 100%;
-        order: 2;
-        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .canvas-container {
+        min-height: 300px;
+        margin: 5px;
+    }
+
+    .preview-panel {
+        width: 100%;
+        min-height: 300px;
+        margin-top: 20px;
+    }
+
+    #customization-canvas {
+        max-width: 100%;
         height: auto;
-        overflow: visible;
-    }
-
-    .tool-section {
-        margin-bottom: 1.5rem;
-    }
-
-    .font-controls {
-        flex-wrap: wrap;
-    }
-
-    .font-controls input[type="number"] {
-        width: 100%;
-    }
-
-    .color-picker-container {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .color-picker {
-        width: 100%;
-    }
-
-    .file-upload-label {
-        width: 100%;
-        text-align: center;
-    }
-
-    .action-buttons {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .action-buttons button {
-        width: 100%;
-    }
-
-    .price-display {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background-color: var(--card-bg);
-        padding: 1rem;
-        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-        text-align: center;
     }
 }
 
-@media (max-width: 480px) {
-    .customizer-page {
-        margin: 1rem auto;
-        padding: 0 0.5rem;
+@media screen and (max-width: 480px) {
+    .canvas-container {
+        min-height: 250px;
     }
 
-    .product-info {
-        padding: 1rem;
-    }
-
-    .tools-panel {
-        padding: 1rem;
-    }
-
-    .tool-section h3 {
-        font-size: 1rem;
-    }
-
-    .tool-group input[type="text"],
-    .tool-group input[type="number"],
-    .tool-group select {
-        font-size: 1rem;
-        padding: 0.75rem;
-    }
-
-    .font-controls input[type="color"] {
-        height: 44px;
-    }
-
-    /* Increase touch targets for mobile */
-    button,
-    .file-upload-label,
-    .color-option {
-        min-height: 44px;
-        padding: 0.75rem 1rem;
+    .preview-panel {
+        min-height: 250px;
     }
 }

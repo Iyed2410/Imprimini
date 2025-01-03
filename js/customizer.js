@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     console.log('Customizer initializing...');
 
     // Initialize canvas
@@ -28,9 +28,18 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    // Find the current product
-    const currentProduct = products.find(p => p.id === productId);
-    console.log('Current product:', currentProduct);
+    // Load products from JSON
+    let currentProduct;
+    try {
+        const response = await fetch('./data/products.json');
+        const data = await response.json();
+        currentProduct = data.products.find(p => p.id === productId);
+        console.log('Current product:', currentProduct);
+    } catch (error) {
+        console.error('Error loading product data:', error);
+        showNotification('Error: Failed to load product data', 'error');
+        return;
+    }
 
     if (!currentProduct) {
         console.error('Product not found');
