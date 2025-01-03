@@ -932,6 +932,12 @@ body.dark-mode .dropdown-content a:hover {
   .cart-icon {
     margin-right: 50px;
   }
+
+  .social-links {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 1rem;
+  }
 }
 
 /* Responsive Grid Layouts */
