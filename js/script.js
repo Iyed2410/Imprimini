@@ -27,6 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     const navbar = document.querySelector('.navbar');
     const mobileMenuOverlay = document.querySelector('.mobile-menu-overlay');
+    const accountLink = document.querySelector('.account-link');
+    const accountDropdown = document.querySelector('.account-dropdown');
 
     if (mobileMenuBtn && navbar && mobileMenuOverlay) {
         mobileMenuBtn.addEventListener('click', function() {
@@ -41,8 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.style.overflow = '';
         });
 
-        // Close menu when clicking a link
-        const navLinks = navbar.querySelectorAll('a');
+        // Close menu when clicking a link (except account link)
+        const navLinks = navbar.querySelectorAll('a:not(.account-link)');
         navLinks.forEach(link => {
             link.addEventListener('click', function() {
                 navbar.classList.remove('active');
@@ -52,8 +54,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Smooth scrolling for anchor links
-    const links = document.querySelectorAll("a[href^='#']");
+    // Account dropdown functionality
+    if (accountLink && accountDropdown) {
+        accountLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            accountDropdown.classList.toggle('active');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!accountDropdown.contains(e.target) && !accountLink.contains(e.target)) {
+                accountDropdown.classList.remove('active');
+            }
+        });
+    }
+
+    // Logout functionality
+    function handleLogout() {
+        // Add your logout logic here
+        console.log('Logging out...');
+        // For example:
+        // localStorage.removeItem('user');
+        // window.location.href = 'login.html';
+    }
+
+    // Smooth scrolling for anchor links (excluding account-related links)
+    const links = document.querySelectorAll("a[href^='#']:not(.account-link):not([onclick])");
     links.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
