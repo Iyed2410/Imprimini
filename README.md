@@ -9,12 +9,12 @@ A modern, responsive e-commerce website for custom printing services. This platf
 - **Shopping Cart**: User-friendly shopping cart system
 - **User Accounts**: Personal account management and order tracking
 - **Community Section**: Space for users to share and showcase their designs
+- **Theme Toggle**: Persistent dark/light mode toggle accessible across all page
 
 ## 🛠️ Technologies Used
 
 - HTML5
-- CSS3
-- JavaScript
+- JavaScript (ES6+)
 - Font Awesome Icons
 - AOS (Animate On Scroll) library
 
@@ -23,10 +23,15 @@ A modern, responsive e-commerce website for custom printing services. This platf
 ```
 printing/
 ├── css/
+│   ├── styles.css (core styles and theme variables)
+│   ├── cart.css
 │   ├── notifications.css
-│   └── products.css
+│   ├── products.css
+│   └── drone-checkout.css
 ├── js/
-│   └── script.js
+│   ├── script.js
+│   ├── cart.js
+│   └── account.js
 ├── img/
 │   ├── imprimini_white.png
 │   └── imprimini_black.png
@@ -40,8 +45,11 @@ printing/
     ├── products.html
     ├── customize.html
     ├── cart.html
+    ├── checkout.html
+    ├── order-confirmation.html
     ├── orders.html
     ├── account.html
+    ├── account-settings.html
     ├── contact.html
     ├── about.html
     └── community.html
@@ -98,7 +106,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Contact
 
 - Website: https://iyed2410.github.io/Imprimini/
-- Email: iyedkolsi123@gmail.com
+- Email: [e-mail-me](iyedkolsi123@gmail.com)
 - Phone: +216-21-457-407
 
 ## 🙏 Acknowledgments
