@@ -62,7 +62,7 @@
         <div class="container">
             <h1>Shopping Cart</h1>
             <div class="cart-container">
-                <div class="cart-items">
+                <div class="cart-items" id="cart-items">
                     <!-- Cart items will be dynamically added here -->
                 </div>
                 <div class="cart-summary">
@@ -77,7 +77,7 @@
                     </div>
                     <div class="summary-item total">
                         <span>Total</span>
-                        <span class="total-amount">0.00 DT</span>
+                        <span class="total-amount" id="cart-total">0.00 DT</span>
                     </div>
                     <button class="checkout-btn" onclick="window.location.href='checkout.html'">
                         Proceed to Checkout
@@ -134,6 +134,88 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             updateAccountDisplay();
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartTotalElement = document.getElementById('cart-total');
+
+            function updateCartDisplay() {
+                if (!window.cart) {
+                    console.error('Cart not initialized');
+                    return;
+                }
+
+                const items = window.cart.getItems();
+                console.log('Rendering cart items:', items);
+
+                // Clear current items
+                cartItemsContainer.innerHTML = '';
+                
+                if (items.length === 0) {
+                    cartItemsContainer.innerHTML = '<div class="empty-cart">Your cart is empty</div>';
+                    document.querySelector('.cart-summary').style.display = 'none';
+                    return;
+                }
+
+                document.querySelector('.cart-summary').style.display = 'block';
+                
+                items.forEach(item => {
+                    console.log('Rendering item:', item);
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'cart-item';
+                    itemElement.setAttribute('data-cart-id', item.cartId);
+
+                    const imageUrl = item.customImage || item.image;
+                    console.log('Image URL:', imageUrl);
+
+                    itemElement.innerHTML = `
+                        <div class="item-image">
+                            <img src="${imageUrl}" alt="${item.name}" onerror="this.src='img/product/default.jpg'">
+                            ${item.customImage ? '<div class="custom-badge">Customized</div>' : ''}
+                        </div>
+                        <div class="item-details">
+                            <h3 class="item-name">${item.name}</h3>
+                            <p class="item-price">${item.price} DT</p>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn decrease">-</button>
+                                <span class="quantity">${item.quantity}</span>
+                                <button class="quantity-btn increase">+</button>
+                            </div>
+                        </div>
+                        <button class="remove-item" title="Remove item">×</button>
+                    `;
+
+                    // Add event listeners
+                    itemElement.querySelector('.decrease').addEventListener('click', () => {
+                        const newQty = (item.quantity || 1) - 1;
+                        if (newQty > 0) {
+                            window.cart.updateItem(item.cartId, { quantity: newQty });
+                            updateCartDisplay();
+                        }
+                    });
+
+                    itemElement.querySelector('.increase').addEventListener('click', () => {
+                        window.cart.updateItem(item.cartId, { quantity: (item.quantity || 1) + 1 });
+                        updateCartDisplay();
+                    });
+
+                    itemElement.querySelector('.remove-item').addEventListener('click', () => {
+                        window.cart.removeItem(item.cartId);
+                        updateCartDisplay();
+                    });
+
+                    cartItemsContainer.appendChild(itemElement);
+                });
+                
+                // Update total
+                const total = window.cart.getTotalPrice();
+                cartTotalElement.textContent = `${total.toFixed(2)} DT`;
+            }
+
+            // Initial display
+            updateCartDisplay();
         });
     </script>
 </body>

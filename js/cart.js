@@ -1,8 +1,15 @@
 // Cart class to manage shopping cart functionality
 class Cart {
     constructor() {
-        this.items = this.loadCart();
-        this.updateCartCount();
+        try {
+            const savedCart = localStorage.getItem('cart');
+            console.log('Saved cart data:', savedCart);
+            this.items = savedCart ? JSON.parse(savedCart) : [];
+            console.log('Loaded cart items:', this.items);
+        } catch (error) {
+            console.error('Error loading cart:', error);
+            this.items = [];
+        }
     }
 
     // Load cart from localStorage
@@ -13,9 +20,16 @@ class Cart {
 
     // Save cart to localStorage
     saveCart() {
-        localStorage.setItem('cart', JSON.stringify(this.items));
-        this.updateCartCount();
-        this.updateCartSummary();
+        try {
+            const cartData = JSON.stringify(this.items);
+            console.log('Saving cart data:', cartData.substring(0, 200) + '...');
+            localStorage.setItem('cart', cartData);
+            console.log('Cart saved successfully');
+            this.updateCartCount();
+            this.updateCartSummary();
+        } catch (error) {
+            console.error('Error saving cart:', error);
+        }
     }
 
     // Update cart count display
@@ -31,7 +45,7 @@ class Cart {
         const cartSummary = document.querySelector('.cart-summary');
         if (!cartSummary) return;
 
-        const subtotal = this.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+        const subtotal = this.items.reduce((total, item) => total + (item.price * (item.quantity || 1)), 0);
         const shipping = this.items.length > 0 ? 7 : 0; // 7 DT shipping fee
         const total = subtotal + shipping;
 
@@ -95,61 +109,93 @@ class Cart {
 
     // Add item to cart
     addItem(item) {
-        console.log('Adding item to cart:', item);
-        if (!item) {
-            console.error('Invalid item');
+        try {
+            console.log('Adding item to cart:', item);
+            
+            if (!item) {
+                throw new Error('Invalid item');
+            }
+
+            // Compress image data if it's too large
+            if (item.customImage && item.customImage.length > 5000000) { // if larger than 5MB
+                const img = new Image();
+                img.src = item.customImage;
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                img.onload = () => {
+                    // Scale down the image
+                    const maxSize = 800;
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > height) {
+                        if (width > maxSize) {
+                            height *= maxSize / width;
+                            width = maxSize;
+                        }
+                    } else {
+                        if (height > maxSize) {
+                            width *= maxSize / height;
+                            height = maxSize;
+                        }
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Convert to lower quality JPEG
+                    item.customImage = canvas.toDataURL('image/jpeg', 0.7);
+                };
+            }
+
+            // For customized items, always add as new item
+            const cartItem = {
+                ...item,
+                cartId: Date.now(),
+                quantity: item.quantity || 1,
+                timestamp: new Date().toISOString()
+            };
+
+            this.items.push(cartItem);
+            console.log('Added item successfully:', cartItem);
+            
+            this.saveCart();
+            return true;
+        } catch (error) {
+            console.error('Error adding item to cart:', error);
             return false;
         }
-
-        // Add unique cart ID if not present
-        if (!item.cartId) {
-            item.cartId = Date.now();
-        }
-
-        // Add quantity if not present
-        if (!item.quantity) {
-            item.quantity = 1;
-        }
-
-        const existingItem = this.items.find(i => i.cartId === item.cartId);
-        if (existingItem) {
-            existingItem.quantity += item.quantity;
-        } else {
-            this.items.push(item);
-        }
-
-        this.saveCart();
-        return true;
-    }
-
-    // Remove item from cart
-    removeItem(cartId) {
-        console.log('Removing item:', cartId);
-        this.items = this.items.filter(item => item.cartId !== cartId);
-        this.saveCart();
     }
 
     // Update item quantity
     updateQuantity(cartId, quantity) {
-        console.log('Updating quantity:', cartId, quantity);
-        const item = this.items.find(item => item.cartId === cartId);
-        if (item) {
-            item.quantity = Math.max(1, parseInt(quantity) || 1);
-            if (item.quantity === 0) {
-                this.removeItem(cartId);
-            } else {
-                this.saveCart();
+        try {
+            const item = this.items.find(item => item.cartId === cartId);
+            if (item) {
+                item.quantity = Math.max(1, parseInt(quantity) || 1);
+                if (item.quantity === 0) {
+                    this.removeItem(cartId);
+                } else {
+                    this.saveCart();
+                }
             }
+        } catch (error) {
+            console.error('Error updating quantity:', error);
         }
     }
 
-    // Calculate cart total
-    getTotal() {
-        const subtotal = this.items.reduce((total, item) => {
-            return total + (item.price * item.quantity);
-        }, 0);
-        const shipping = this.items.length > 0 ? 7 : 0; // 7 DT shipping fee
-        return subtotal + shipping;
+    // Remove item from cart
+    removeItem(cartId) {
+        try {
+            this.items = this.items.filter(item => item.cartId !== cartId);
+            this.saveCart();
+            return true;
+        } catch (error) {
+            console.error('Error removing item:', error);
+            return false;
+        }
     }
 
     // Render cart items
@@ -167,8 +213,8 @@ class Cart {
         cartContainer.innerHTML = this.items.map(item => `
             <div class="cart-item" data-id="${item.cartId}">
                 <div class="item-image">
-                    ${item.customizedDesign ? 
-                        `<img src="${item.customizedDesign}" alt="${item.name} (Customized)">` :
+                    ${item.customImage ? 
+                        `<img src="${item.customImage}" alt="${item.name} (Customized)">` :
                         `<img src="${item.image}" alt="${item.name}">`
                     }
                 </div>
@@ -177,10 +223,10 @@ class Cart {
                     <p>${item.description}</p>
                     <div class="quantity-controls">
                         <button class="quantity-btn minus">-</button>
-                        <input type="number" class="quantity-input" value="${item.quantity}" min="1" max="99">
+                        <input type="number" class="quantity-input" value="${item.quantity || 1}" min="1" max="99">
                         <button class="quantity-btn plus">+</button>
                     </div>
-                    <p class="item-price">${(item.price * item.quantity).toFixed(2)} DT</p>
+                    <p class="item-price">${(item.price * (item.quantity || 1)).toFixed(2)} DT</p>
                 </div>
                 <button class="remove-item"><i class="fas fa-trash"></i></button>
             </div>
@@ -268,7 +314,7 @@ class Cart {
                     processing = false;
                     
                     // Store cart total for checkout page
-                    const total = this.getTotal();
+                    const total = this.getTotalPrice();
                     localStorage.setItem('cartTotal', `$${total.toFixed(2)}`);
                     
                     // Go to checkout page
@@ -277,12 +323,22 @@ class Cart {
             });
         }
     }
+
+    // Calculate cart total
+    getTotalPrice() {
+        return this.items.reduce((total, item) => total + (item.price * (item.quantity || 1)), 0);
+    }
+
+    getItems() {
+        console.log('Getting cart items:', this.items);
+        return this.items;
+    }
 }
 
-// Initialize cart
-const cart = new Cart();
+// Initialize cart when the script loads
+window.cart = new Cart();
 
 // Render cart if on cart page
 if (document.querySelector('.cart-items')) {
-    cart.renderCart();
+    window.cart.renderCart();
 }

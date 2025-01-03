@@ -172,7 +172,7 @@
             orderItems.innerHTML = cart.items.map(item => `
                 <div class="order-item">
                     <div class="item-image">
-                        <img src="${item.image}" alt="${item.name}" onerror="this.src='img/product/default.jpg'">
+                        <img src="${item.customImage || item.image}" alt="${item.name}" onerror="this.src='img/product/default.jpg'">
                     </div>
                     <div class="item-details">
                         <h3>${item.name}</h3>

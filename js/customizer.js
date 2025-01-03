@@ -1,6 +1,180 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Customizer initializing...');
 
+    // Initialize canvas
+    const canvas = document.getElementById('customization-canvas');
+    if (!canvas) {
+        console.error('Canvas element not found');
+        showNotification('Error: Canvas not found', 'error');
+        return;
+    }
+
+    // Initialize Fabric canvas
+    const fabricCanvas = new fabric.Canvas('customization-canvas', {
+        preserveObjectStacking: true,
+        selection: true,
+        allowTouchScrolling: true
+    });
+
+    // Get product ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = parseInt(urlParams.get('product'));
+    console.log('Product ID from URL:', productId);
+
+    if (!productId) {
+        console.error('No product ID specified');
+        showNotification('Error: No product selected', 'error');
+        window.location.href = 'products.html';
+        return;
+    }
+
+    // Find the current product
+    const currentProduct = products.find(p => p.id === productId);
+    console.log('Current product:', currentProduct);
+
+    if (!currentProduct) {
+        console.error('Product not found');
+        showNotification('Error: Product not found', 'error');
+        window.location.href = 'products.html';
+        return;
+    }
+
+    // Update product info
+    const productName = document.getElementById('product-name');
+    const productPrice = document.getElementById('product-price');
+    const productDescription = document.getElementById('product-description');
+
+    if (productName) productName.textContent = currentProduct.name;
+    if (productPrice) productPrice.textContent = `${currentProduct.price} DT`;
+    if (productDescription) productDescription.textContent = currentProduct.description;
+
+    // Initialize color swatches
+    const colorSwatches = document.querySelector('.color-swatches');
+    if (colorSwatches) {
+        // Clear existing swatches
+        colorSwatches.innerHTML = '';
+        
+        // Add color swatches if product has colors
+        if (currentProduct.colors && currentProduct.colors.length > 0) {
+            currentProduct.colors.forEach(color => {
+                const swatch = document.createElement('div');
+                swatch.className = 'color-swatch';
+                swatch.innerHTML = `
+                    <img src="${color.image}" alt="${color.name}" title="${color.name}">
+                    <span class="color-name">${color.name}</span>
+                `;
+                swatch.setAttribute('data-color', color.name.toLowerCase());
+                
+                swatch.addEventListener('click', function() {
+                    // Remove active class from all swatches
+                    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+                    // Add active class to clicked swatch
+                    swatch.classList.add('active');
+                    // Change product image
+                    changeProductImage(color.image);
+                });
+                
+                colorSwatches.appendChild(swatch);
+            });
+
+            // Set first color as active
+            const firstSwatch = colorSwatches.querySelector('.color-swatch');
+            if (firstSwatch) {
+                firstSwatch.classList.add('active');
+            }
+        } else {
+            // If no colors available, hide the color selection section
+            const colorSection = document.querySelector('.color-section');
+            if (colorSection) {
+                colorSection.style.display = 'none';
+            }
+        }
+    }
+
+    // Function to change product image
+    function changeProductImage(imageSrc) {
+        fabric.Image.fromURL(imageSrc, function(img) {
+            // Scale image to fit canvas
+            const maxSize = Math.min(window.innerWidth * 0.8, window.innerHeight * 0.8);
+            const scale = Math.min(maxSize / img.width, maxSize / img.height);
+            
+            img.set({
+                scaleX: scale,
+                scaleY: scale,
+                selectable: false,
+                evented: false
+            });
+
+            // Set canvas size
+            fabricCanvas.setWidth(img.width * scale);
+            fabricCanvas.setHeight(img.height * scale);
+            
+            // Add image to canvas
+            fabricCanvas.setBackgroundImage(img, fabricCanvas.renderAll.bind(fabricCanvas));
+            
+            // Resize canvas
+            resizeCanvas();
+        });
+    }
+
+    // Load the initial product image
+    const productImage = new Image();
+    productImage.crossOrigin = 'Anonymous';
+    productImage.src = currentProduct.image;
+    console.log('Loading product image:', currentProduct.image);
+
+    // Function to resize canvas
+    function resizeCanvas() {
+        const container = document.querySelector('.canvas-container');
+        if (!container) return;
+
+        const maxSize = Math.min(window.innerWidth * 0.8, window.innerHeight * 0.8);
+        const scale = Math.min(maxSize / productImage.width, maxSize / productImage.height);
+        
+        const width = productImage.width * scale;
+        const height = productImage.height * scale;
+        
+        fabricCanvas.setWidth(width);
+        fabricCanvas.setHeight(height);
+        fabricCanvas.calcOffset();
+        fabricCanvas.renderAll();
+    }
+
+    productImage.onload = function() {
+        console.log('Product image loaded successfully');
+        
+        // Create fabric image
+        fabric.Image.fromURL(productImage.src, function(img) {
+            // Scale image to fit canvas
+            const maxSize = Math.min(window.innerWidth * 0.8, window.innerHeight * 0.8);
+            const scale = Math.min(maxSize / img.width, maxSize / img.height);
+            
+            img.set({
+                scaleX: scale,
+                scaleY: scale,
+                selectable: false,
+                evented: false
+            });
+
+            // Set canvas size
+            fabricCanvas.setWidth(img.width * scale);
+            fabricCanvas.setHeight(img.height * scale);
+            
+            // Add image to canvas
+            fabricCanvas.setBackgroundImage(img, fabricCanvas.renderAll.bind(fabricCanvas));
+            
+            // Initial resize
+            resizeCanvas();
+        });
+    };
+
+    productImage.onerror = function(error) {
+        console.error('Error loading product image:', error);
+        showNotification('Error loading product image. Please try again.', 'error');
+    };
+
+    window.addEventListener('resize', resizeCanvas);
+
     // Wait for cart to be available
     if (typeof window.cart === 'undefined') {
         console.error('Cart not initialized. Creating new cart instance...');
@@ -9,15 +183,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize notification function if not already defined
     if (typeof showNotification === 'undefined') {
-        window.showNotification = function(message) {
+        window.showNotification = function(message, type = 'success') {
             const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}-circle"></i>
+                ${message}
+                <button onclick="this.parentElement.remove()">×</button>
+            `;
             document.body.appendChild(notification);
-            setTimeout(() => notification.classList.add('show'), 100);
+            
+            // Remove notification after 3 seconds
             setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => document.body.removeChild(notification), 300);
+                notification.remove();
             }, 3000);
         };
     }
@@ -29,150 +207,66 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    // Initialize canvas with proper dimensions
-    const canvas = new fabric.Canvas('design-preview', {
-        width: 500,
-        height: 500,
-        backgroundColor: '#ffffff'
-    });
-    console.log('Canvas initialized:', canvas);
+    // Add to cart button
+    const addToCartBtn = document.getElementById('add-to-cart');
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', async function() {
+            try {
+                // Disable button while processing
+                addToCartBtn.disabled = true;
+                addToCartBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding to cart...';
 
-    // Get product from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = parseInt(urlParams.get('product'));
-    console.log('Product ID from URL:', productId);
+                // Initialize cart if not already initialized
+                if (typeof window.cart === 'undefined') {
+                    window.cart = new Cart();
+                }
 
-    if (!productId) {
-        console.error('No product ID in URL');
-        showNotification('Error: No product selected');
-        return;
-    }
-    
-    // Check if products array exists
-    if (typeof products === 'undefined' || !Array.isArray(products)) {
-        console.error('Products array is not properly loaded');
-        showNotification('Error: Product data not loaded. Please refresh the page.');
-        return;
-    }
-
-    // Find the current product
-    const currentProduct = products.find(p => p.id === productId);
-    console.log('Current product:', currentProduct);
-    
-    if (!currentProduct) {
-        console.error('Product not found for ID:', productId);
-        showNotification('Error: Product not found');
-        return;
-    }
-
-    // Update product info
-    document.getElementById('product-name').textContent = currentProduct.name;
-    document.getElementById('product-description').textContent = currentProduct.description;
-    document.getElementById('product-price').textContent = `${currentProduct.price} DT`;
-
-    // Initialize color options
-    if (currentProduct.colors && Array.isArray(currentProduct.colors)) {
-        const colorSwatches = document.querySelector('.color-swatches');
-        if (colorSwatches) {
-            colorSwatches.innerHTML = currentProduct.colors.map(color => `
-                <div class="color-swatch" 
-                     data-color="${typeof color === 'object' ? color.name : color}"
-                     data-image="${typeof color === 'object' ? color.image : ''}"
-                     style="background-image: url(${typeof color === 'object' ? color.image : ''})">
-                </div>
-            `).join('');
-
-            // Add click handlers for color swatches
-            const swatches = colorSwatches.querySelectorAll('.color-swatch');
-            swatches.forEach(swatch => {
-                swatch.addEventListener('click', function() {
-                    const imagePath = this.dataset.image;
-                    const colorName = this.dataset.color;
-                    
-                    // Update product image
-                    if (imagePath) {
-                        fabric.Image.fromURL(imagePath, function(img) {
-                            if (!img) {
-                                console.error('Failed to load product image');
-                                showNotification('Error: Failed to load product image');
-                                return;
-                            }
-
-                            // Scale image to fit canvas
-                            const scaleX = canvas.width / img.width;
-                            const scaleY = canvas.height / img.height;
-                            const scale = Math.min(scaleX, scaleY);
-
-                            img.scale(scale);
-                            img.set({
-                                left: (canvas.width - img.width * scale) / 2,
-                                top: (canvas.height - img.height * scale) / 2,
-                                selectable: false,
-                                evented: false,
-                                name: 'productImage'
-                            });
-
-                            // Remove old product image
-                            const oldImage = canvas.getObjects().find(obj => obj.name === 'productImage');
-                            if (oldImage) {
-                                canvas.remove(oldImage);
-                            }
-                            
-                            // Add new product image
-                            canvas.add(img);
-                            canvas.sendToBack(img);
-                            canvas.renderAll();
-                            
-                            showNotification(`Color changed to ${colorName}`);
-                        });
-                    }
-                    
-                    // Update active swatch
-                    swatches.forEach(s => s.classList.remove('active'));
-                    this.classList.add('active');
+                // Get customized image data URL with lower quality for storage
+                const customizedImageURL = fabricCanvas.toDataURL({
+                    format: 'jpeg',
+                    quality: 0.8
                 });
-            });
 
-            // Set initial color as active
-            if (swatches.length > 0) {
-                swatches[0].classList.add('active');
+                // Create cart item
+                const cartItem = {
+                    id: currentProduct.id,
+                    name: currentProduct.name,
+                    price: currentProduct.price,
+                    image: currentProduct.image,
+                    quantity: 1,
+                    customImage: customizedImageURL
+                };
+
+                // Add to cart
+                const success = window.cart.addItem(cartItem);
+                
+                if (success) {
+                    // Show success message
+                    showNotification('Product added to cart successfully!');
+                    
+                    // Update cart count
+                    const cartCount = document.querySelector('.cart-icon');
+                    if (cartCount) {
+                        cartCount.setAttribute('data-count', window.cart.getItemCount());
+                    }
+
+                    // Redirect to cart after a short delay
+                    setTimeout(() => {
+                        window.location.href = 'cart.html';
+                    }, 1500);
+                } else {
+                    throw new Error('Failed to add item to cart');
+                }
+            } catch (error) {
+                console.error('Error adding to cart:', error);
+                showNotification('Error adding to cart. Please try again.');
+            } finally {
+                // Re-enable button
+                addToCartBtn.disabled = false;
+                addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
             }
-        }
-    } else {
-        // Hide color options if no colors available
-        const colorSection = document.getElementById('color-options');
-        if (colorSection) {
-            colorSection.style.display = 'none';
-        }
-    }
-
-    // Load initial product image
-    console.log('Loading product image:', currentProduct.image);
-    fabric.Image.fromURL(currentProduct.image, function(img) {
-        if (!img) {
-            console.error('Failed to load product image');
-            showNotification('Error: Failed to load product image');
-            return;
-        }
-
-        // Scale image to fit entire canvas
-        const scaleX = canvas.width / img.width;
-        const scaleY = canvas.height / img.height;
-        const scale = Math.min(scaleX, scaleY);
-
-        img.scale(scale);
-        img.set({
-            left: (canvas.width - img.width * scale) / 2,
-            top: (canvas.height - img.height * scale) / 2,
-            selectable: false,
-            evented: false,
-            name: 'productImage'
         });
-
-        canvas.add(img);
-        canvas.renderAll();
-        console.log('Product image added to canvas');
-    });
+    }
 
     // Text controls
     const addTextBtn = document.getElementById('add-text');
@@ -191,8 +285,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             console.log('Adding text:', text);
             const textObject = new fabric.Text(text, {
-                left: canvas.width / 2,
-                top: canvas.height / 2,
+                left: fabricCanvas.width / 2,
+                top: fabricCanvas.height / 2,
                 fontFamily: fontFamily.value || 'Arial',
                 fontSize: parseInt(fontSize.value) || 20,
                 fill: textColor.value || '#000000',
@@ -200,17 +294,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 originY: 'center'
             });
 
-            canvas.add(textObject);
-            canvas.setActiveObject(textObject);
+            fabricCanvas.add(textObject);
+            fabricCanvas.setActiveObject(textObject);
             textInput.value = '';
-            canvas.renderAll();
+            fabricCanvas.renderAll();
             console.log('Text added:', textObject);
         });
     }
 
     // Update text properties
     function updateActiveText() {
-        const activeObject = canvas.getActiveObject();
+        const activeObject = fabricCanvas.getActiveObject();
         if (activeObject && activeObject.type === 'text') {
             console.log('Updating text properties');
             activeObject.set({
@@ -218,7 +312,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 fontSize: parseInt(fontSize.value),
                 fill: textColor.value
             });
-            canvas.renderAll();
+            fabricCanvas.renderAll();
         }
     }
 
@@ -258,15 +352,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     img.scale(scale);
                     img.set({
-                        left: canvas.width / 2,
-                        top: canvas.height / 2,
+                        left: fabricCanvas.width / 2,
+                        top: fabricCanvas.height / 2,
                         originX: 'center',
                         originY: 'center'
                     });
 
-                    canvas.add(img);
-                    canvas.setActiveObject(img);
-                    canvas.renderAll();
+                    fabricCanvas.add(img);
+                    fabricCanvas.setActiveObject(img);
+                    fabricCanvas.renderAll();
                     console.log('Image added to canvas');
                 });
             };
@@ -278,96 +372,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const deleteBtn = document.getElementById('delete-selected');
     if (deleteBtn) {
         deleteBtn.addEventListener('click', function() {
-            const activeObject = canvas.getActiveObject();
+            const activeObject = fabricCanvas.getActiveObject();
             if (activeObject && activeObject.name !== 'productImage') {
                 console.log('Deleting object:', activeObject);
-                canvas.remove(activeObject);
-                canvas.renderAll();
+                fabricCanvas.remove(activeObject);
+                fabricCanvas.renderAll();
                 showNotification('Object deleted');
             }
         });
     }
-
-    // Add to Cart functionality
-    const addToCartBtn = document.getElementById('add-to-cart');
-    if (addToCartBtn) {
-        addToCartBtn.addEventListener('click', async function() {
-            try {
-                // Disable the button during processing
-                addToCartBtn.disabled = true;
-                addToCartBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-
-                // Make sure cart is initialized
-                if (!window.cart) {
-                    console.error('Cart not initialized');
-                    throw new Error('Cart not available');
-                }
-
-                // Get the canvas data URL with lower quality for storage
-                const customizedDesign = canvas.toDataURL({
-                    format: 'jpeg',
-                    quality: 0.5,
-                    multiplier: 0.8
-                });
-
-                // Create cart item from current product
-                const cartItem = {
-                    id: currentProduct.id,
-                    name: currentProduct.name,
-                    description: currentProduct.description,
-                    price: currentProduct.price,
-                    image: currentProduct.image,
-                    cartId: Date.now(),
-                    quantity: 1,
-                    customizedDesign: customizedDesign,
-                    isCustomized: true
-                };
-
-                console.log('Adding customized item to cart:', {
-                    id: cartItem.id,
-                    name: cartItem.name,
-                    price: cartItem.price,
-                    isCustomized: cartItem.isCustomized
-                });
-
-                // Add to cart
-                const added = window.cart.addItem(cartItem);
-                if (!added) {
-                    throw new Error('Failed to add item to cart');
-                }
-
-                showNotification('Customized product added to cart!');
-                
-                // Redirect to cart page after a short delay
-                setTimeout(() => {
-                    window.location.href = 'cart.html';
-                }, 1500);
-
-            } catch (error) {
-                console.error('Error adding to cart:', error);
-                showNotification('Error adding to cart. Please try again.');
-            } finally {
-                // Re-enable the button
-                addToCartBtn.disabled = false;
-                addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
-            }
-        });
-    }
-
-    // Make canvas responsive
-    window.addEventListener('resize', function() {
-        const container = canvas.wrapperEl.parentNode;
-        const ratio = canvas.width / canvas.height;
-        const containerWidth = container.clientWidth;
-        const scale = containerWidth / canvas.width;
-        const zoom = Math.min(1, scale);
-        canvas.setZoom(zoom);
-        canvas.setDimensions({
-            width: containerWidth,
-            height: containerWidth / ratio
-        });
-    });
-
-    // Initialize canvas size
-    window.dispatchEvent(new Event('resize'));
 });

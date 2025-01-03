@@ -75,7 +75,7 @@
             </div>
         </div>
 
-        <div class="products-grid">
+        <div id="products-grid" class="products-grid">
             <!-- Products will be rendered here by JavaScript -->
         </div>
     </main>
@@ -118,13 +118,61 @@
 
     <!-- Scripts -->
     <script src="js/script.js"></script>
-    <script src="js/cart.js"></script>
     <script src="js/account.js"></script>
+    <script src="js/cart.js"></script>
     <script src="js/products.js"></script>
+    <script>
+        // Initialize products when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Render all products initially
+            renderProducts(products);
+
+            // Add filter functionality
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const category = this.dataset.category;
+                    
+                    // Update active state
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Filter products
+                    const filteredProducts = category === 'All' 
+                        ? products 
+                        : products.filter(product => product.category === category);
+                    
+                    renderProducts(filteredProducts);
+                });
+            });
+
+            // Add sort functionality
+            const sortSelect = document.getElementById('sort-select');
+            sortSelect.addEventListener('change', function() {
+                const currentFilter = document.querySelector('.filter-btn.active').dataset.category;
+                let currentProducts = currentFilter === 'All' 
+                    ? [...products] 
+                    : products.filter(product => product.category === currentFilter);
+
+                switch(this.value) {
+                    case 'name':
+                        currentProducts.sort((a, b) => a.name.localeCompare(b.name));
+                        break;
+                    case 'price-low':
+                        currentProducts.sort((a, b) => a.price - b.price);
+                        break;
+                    case 'price-high':
+                        currentProducts.sort((a, b) => b.price - a.price);
+                        break;
+                }
+
+                renderProducts(currentProducts);
+            });
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             updateAccountDisplay();
-            renderProducts(); // Initialize product display
         });
     </script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
