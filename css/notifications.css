@@ -1,20 +1,20 @@
 .notification {
     height: 50px;
     position: fixed;
-    bottom: 20px;
+    top: calc(4rem + 10px);  /* navbar height (1rem * 2 for padding + ~2rem content) + gap */
     right: 20px;
     background-color: #28a745;
     color: white;
     padding: 15px 25px;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    transform: translateY(100px);
+    transform: translateX(100px);
     opacity: 0;
     transition: transform 0.3s ease, opacity 0.3s ease;
-    z-index: 1000;
+    z-index: 999;  /* Just below the navbar's z-index */
 }
 
 .notification.show {
-    transform: translateY(0);
+    transform: translateX(0);
     opacity: 1;
 }

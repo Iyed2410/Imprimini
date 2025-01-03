@@ -58,7 +58,12 @@ function renderProducts(productsToRender = products) {
 
         // Add event listener for Add to Cart button
         const addToCartBtn = productCard.querySelector('.add-to-cart-btn');
-        addToCartBtn.addEventListener('click', function() {
+        addToCartBtn.addEventListener('click', async function() {
+            // Disable button while processing
+            addToCartBtn.disabled = true;
+            const originalText = addToCartBtn.innerHTML;
+            addToCartBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+
             try {
                 // Initialize cart if needed
                 if (typeof window.cart === 'undefined') {
@@ -73,14 +78,21 @@ function renderProducts(productsToRender = products) {
                     quantity: 1
                 };
 
-                const success = window.cart.addItem(cartItem);
+                const success = await window.cart.addItem(cartItem);
                 
                 if (success) {
-                    showNotification('Product added to cart successfully!', 'success');
+                    // Find the item in cart to get its current quantity
+                    const cartItems = window.cart.items;
+                    const addedItem = cartItems.find(item => item.id === product.id && !item.customImage);
+                    const quantity = addedItem ? addedItem.quantity : 1;
+                    
+                    // Show success message with quantity
+                    showNotification(`Added to cart (Quantity: ${quantity})`, 'success');
+                    
                     // Update cart count
                     const cartCount = document.querySelector('.cart-icon');
                     if (cartCount) {
-                        cartCount.setAttribute('data-count', window.cart.getItemCount());
+                        cartCount.setAttribute('data-count', window.cart.items.length.toString());
                     }
                 } else {
                     throw new Error('Failed to add item to cart');
@@ -88,6 +100,10 @@ function renderProducts(productsToRender = products) {
             } catch (error) {
                 console.error('Error adding to cart:', error);
                 showNotification('Error adding to cart. Please try again.', 'error');
+            } finally {
+                // Re-enable button and restore original text
+                addToCartBtn.disabled = false;
+                addToCartBtn.innerHTML = originalText;
             }
         });
     });

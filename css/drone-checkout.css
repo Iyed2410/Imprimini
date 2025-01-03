@@ -24,7 +24,6 @@
   background: var(--main-color);
   transition: background-color 1s;
   cursor: pointer;
-  margin: 50px auto;
 }
 
 .demo:before,

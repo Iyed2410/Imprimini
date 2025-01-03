@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 };
 
                 // Add to cart
-                const success = window.cart.addItem(cartItem);
+                const success = await window.cart.addItem(cartItem);
                 
                 if (success) {
                     // Show success message
@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     // Update cart count
                     const cartCount = document.querySelector('.cart-icon');
                     if (cartCount) {
-                        cartCount.setAttribute('data-count', window.cart.getItemCount());
+                        cartCount.setAttribute('data-count', window.cart.items.length.toString());
                     }
 
                     // Redirect to cart after a short delay
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
             } catch (error) {
                 console.error('Error adding to cart:', error);
-                showNotification('Error adding to cart. Please try again.');
+                showNotification('Error adding to cart. Please try again.', 'error');
             } finally {
                 // Re-enable button
                 addToCartBtn.disabled = false;
