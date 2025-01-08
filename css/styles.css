@@ -908,7 +908,7 @@ body.dark-mode .dropdown-content a:hover {
     transition: 0.3s ease-in-out;
     z-index: 999;
     overflow-y: auto;
-    border-left: 1px solid var(--border-color);
+    border-left: 1px solid white;
     box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
 }
 
