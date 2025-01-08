@@ -90,7 +90,7 @@ printing/
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/printing.git
+git clone https://github.com/Iyed2410/Imprimini.git
 ```
 
 2. Open `index.html` in your web browser to view the website locally.
