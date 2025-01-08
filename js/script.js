@@ -266,6 +266,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Hero Image Navigation
+let currentHeroImage = 1;
+const totalHeroImages = 2;
+
+function changeHeroImage(direction) {
+    currentHeroImage = ((currentHeroImage + direction - 1 + totalHeroImages) % totalHeroImages) + 1;
+    const heroSection = document.querySelector('.hero-section');
+    const newImage = `url('../img/hero/hero-${currentHeroImage}.jpg')`;
+    heroSection.style.setProperty('--current-hero', newImage);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize hero section
+    const heroSection = document.querySelector('.hero-section');
+    if (heroSection) {
+        heroSection.style.setProperty('--current-hero', "url('../img/hero/hero-1.jpg')");
+    }
+});
+
 // Header scroll effect
 window.addEventListener('scroll', () => {
     const header = document.querySelector('header');
