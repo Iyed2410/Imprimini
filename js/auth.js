@@ -133,32 +133,31 @@ function handleLogout() {
 
 // Function to check login status and update UI
 function checkLoginStatus() {
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    
-    // If user is logged in and tries to access account page, redirect to index
-    if (isLoggedIn === 'true' && window.location.pathname.includes('account.html')) {
-        window.location.href = './index.html';
-        return;
-    }
-
-    // Update account link with username if logged in
-    const accountListItem = document.querySelector('.navbar ul li:last-child');
-    const username = localStorage.getItem('username');
-    
-    if (isLoggedIn === 'true' && accountListItem) {
-        accountListItem.innerHTML = `
-            <div class="user-dropdown">
-                <div class="user-info">
-                    <i class="fas fa-user"></i>
-                    <span>${username}</span>
-                </div>
-                <div class="dropdown-content">
-                    <a href="./orders.html"><i class="fas fa-box"></i> My Orders</a>
-                    <a href="./account-settings.html"><i class="fas fa-cog"></i> Settings</a>
-                    <div class="divider"></div>
-                    <a href="#" onclick="handleLogout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                </div>
-            </div>`;
+    try {
+        const userData = JSON.parse(localStorage.getItem('userData'));
+        const isAdmin = userData && userData.role === 'admin';
+        
+        // Update account link with username if logged in
+        const accountListItem = document.querySelector('.navbar ul li:last-child');
+        
+        if (userData && userData.isLoggedIn && accountListItem) {
+            accountListItem.innerHTML = `
+                <div class="user-dropdown">
+                    <div class="user-info">
+                        <i class="fas fa-user"></i>
+                        <span>${userData.name}</span>
+                    </div>
+                    <div class="dropdown-content">
+                        <a href="./orders.html"><i class="fas fa-box"></i> My Orders</a>
+                        <a href="./account-settings.html"><i class="fas fa-cog"></i> Settings</a>
+                        ${isAdmin ? '<a href="./admin.html"><i class="fas fa-user-shield"></i> Admin Dashboard</a>' : ''}
+                        <div class="divider"></div>
+                        <a href="#" onclick="handleLogout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>`;
+        }
+    } catch (error) {
+        console.error('Error checking login status:', error);
     }
 }
 

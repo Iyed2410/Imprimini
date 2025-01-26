@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Imprimini</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html"><div class="logo-container">
+                <img class="logo logo-light" src="img/imprimini_white.png" alt="Logo Light">
+                <img class="logo logo-dark" src="img/imprimini_black.png" alt="Logo Dark">
+            </div></a>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="community.html">Community</a></li>
+                    <li class="account-item">
+                        <a href="#" class="account-link"><i class="fas fa-user"></i> Account</a>
+                        <div class="account-dropdown">
+                            <div class="dropdown-header">
+                                <span class="user-name">Not logged in</span>
+                            </div>
+                            <div class="dropdown-content">
+                                <a href="account.html" class="login-link"><i class="fas fa-sign-in-alt"></i> Login</a>
+                                <div class="logged-in-content" style="display: none;">
+                                    <a href="account-settings.html"><i class="fas fa-cog"></i> Settings</a>
+                                    <a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a>
+                                    <a href="#" onclick="handleLogout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <div class="cart-icon" onclick="window.location.href='cart.html'" data-count="0"></div>
+            <button class="theme-toggle">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="admin-dashboard">
+        <div class="admin-container">
+            <div class="admin-sidebar">
+                <h2>Admin Dashboard</h2>
+                <nav class="admin-nav">
+                    <ul>
+                        <li><a href="#" data-section="overview" class="active"><i class="fas fa-chart-line"></i> Overview</a></li>
+                        <li><a href="#" data-section="users"><i class="fas fa-users"></i> Users</a></li>
+                        <li><a href="#" data-section="orders"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                        <li><a href="#" data-section="products"><i class="fas fa-box"></i> Products</a></li>
+                        <li><a href="#" data-section="settings"><i class="fas fa-cog"></i> Settings</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="admin-content">
+                <!-- Overview Section -->
+                <section id="overview-section" class="admin-section active">
+                    <h2>Overview</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <i class="fas fa-users"></i>
+                            <h3>Total Users</h3>
+                            <p class="stat-number">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-shopping-cart"></i>
+                            <h3>Total Orders</h3>
+                            <p class="stat-number">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-box"></i>
+                            <h3>Products</h3>
+                            <p class="stat-number">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-dollar-sign"></i>
+                            <h3>Revenue</h3>
+                            <p class="stat-number">$0</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Users Section -->
+                <section id="users-section" class="admin-section">
+                    <h2>Users Management</h2>
+                    <div class="table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table-body">
+                                <!-- Users will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Orders Section -->
+                <section id="orders-section" class="admin-section">
+                    <h2>Orders Management</h2>
+                    <div class="table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Total</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body">
+                                <!-- Orders will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Products Section -->
+                <section id="products-section" class="admin-section">
+                    <h2>Products Management</h2>
+                    <button class="add-product-btn"><i class="fas fa-plus"></i> Add New Product</button>
+                    <div class="table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="products-table-body">
+                                <!-- Products will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Settings Section -->
+                <section id="settings-section" class="admin-section">
+                    <h2>Admin Settings</h2>
+                    <form id="admin-settings-form" class="settings-form">
+                        <div class="form-group">
+                            <label for="siteName">Site Name</label>
+                            <input type="text" id="siteName" name="siteName" value="Imprimini">
+                        </div>
+                        <div class="form-group">
+                            <label for="contactEmail">Contact Email</label>
+                            <input type="email" id="contactEmail" name="contactEmail" value="contact@imprimini.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="currency">Currency</label>
+                            <select id="currency" name="currency">
+                                <option value="USD">USD ($)</option>
+                                <option value="EUR">EUR (€)</option>
+                                <option value="GBP">GBP (£)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary">Save Settings</button>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Us</h3>
+                    <p>Imprimini is your trusted partner for all your printing needs. We provide high-quality printing services for businesses and individuals.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <p>Email: info@imprimini.com</p>
+                    <p>Phone: (123) 456-7890</p>
+                    <p>Address: 123 Print Street, City, Country</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Imprimini. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="notification" class="notification" style="display: none;">
+        <span id="notificationMessage"></span>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

@@ -176,14 +176,16 @@ function handleLogin(event) {
 
     // Get name from email (everything before @)
     const name = email.split('@')[0];
-    const work = "Developer"; // Replace with actual user data from backend
-
+    
+    // Check if it's the admin account
+    const isAdmin = email === 'admin@imprimini.com' && password === 'Admin@123';
+    
     // Store user data in localStorage
     const userData = {
         email,
         name,
-        work,
-        isLoggedIn: true
+        isLoggedIn: true,
+        role: isAdmin ? 'admin' : 'user'
     };
     localStorage.setItem('userData', JSON.stringify(userData));
     
@@ -193,9 +195,9 @@ function handleLogin(event) {
     // Show success message
     showNotification('Login successful!', 'success');
     
-    // Redirect to home page after a short delay
+    // Redirect based on role
     setTimeout(() => {
-        window.location.href = 'index.html';
+        window.location.href = isAdmin ? 'admin.html' : 'index.html';
     }, 1500);
 }
 
