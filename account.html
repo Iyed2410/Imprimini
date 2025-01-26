@@ -54,6 +54,10 @@
         <i class="fa-solid fa-moon"></i>
     </button>
 
+    <div id="notification" class="notification" style="display: none;">
+        <span id="notificationMessage"></span>
+    </div>
+
     <main class="auth-container">
         <!-- User Dashboard (shown when logged in) -->
         <div class="user-dashboard" id="userDashboard" style="display: none;">
@@ -95,11 +99,13 @@
                         <div class="inputBx">
                             <input type="text" id="loginEmail" placeholder="Email" required>
                             <span class="fas fa-user"></span>
+                            <div class="error-message" id="emailError"></div>
                         </div>
                         <div class="inputBx password-input">
                             <input type="password" id="loginPassword" placeholder="Password" required>
                             <span class="fas fa-lock"></span>
                             <span class="fas fa-eye toggle-password"></span>
+                            <div class="error-message" id="passwordError"></div>
                         </div>
                         <div class="remember-forgot">
                             <label>
@@ -122,19 +128,23 @@
                         <div class="inputBx">
                             <input type="text" id="signupName" placeholder="Full Name" required>
                             <span class="fas fa-user"></span>
+                            <div class="error-message" id="nameError"></div>
                         </div>
                         <div class="inputBx">
                             <input type="email" id="signupEmail" placeholder="Email" required>
                             <span class="fas fa-envelope"></span>
+                            <div class="error-message" id="signupEmailError"></div>
                         </div>
                         <div class="inputBx">
                             <input type="text" id="signupWork" placeholder="Work/Profession" required>
                             <span class="fas fa-briefcase"></span>
+                            <div class="error-message" id="workError"></div>
                         </div>
                         <div class="inputBx password-input">
                             <input type="password" id="signupPassword" placeholder="Password" required>
                             <span class="fas fa-lock"></span>
                             <span class="fas fa-eye toggle-password"></span>
+                            <div class="error-message" id="signupPasswordError"></div>
                         </div>
                         <div class="terms">
                             <label>

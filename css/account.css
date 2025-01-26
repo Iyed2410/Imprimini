@@ -15,6 +15,7 @@
     --theme-transition: background-color 0.3s ease;
     --error-color: #ff3b3b;
     --success-color: #00c853;
+    --border-color: #ccc;
 }
 
 [data-theme="dark"] {
@@ -115,6 +116,17 @@ body {
     }
 }
 
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .login {
     position: relative;
     z-index: 1;
@@ -166,28 +178,48 @@ body {
 
 .inputBx {
     position: relative;
-    margin-bottom: 20px;
-}
-
-.login.signup .inputBx {
-    margin-bottom: 15px;
+    margin-bottom: 35px;
+    width: 100%;
 }
 
 .inputBx input {
     width: 100%;
-    padding: 15px 45px;
-    border: none;
+    padding: 10px 45px;
     outline: none;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
+    font-weight: 400;
+    border: 1px solid var(--border-color);
     font-size: 16px;
+    letter-spacing: 1px;
     color: var(--text-color);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    background: transparent;
+    border-radius: 30px;
+    transition: border-color 0.3s ease;
 }
 
-.login.signup .inputBx input {
-    padding: 12px 45px;
-    font-size: 15px;
+.inputBx span.fas,
+.inputBx i.fas {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-color);
+    opacity: 0.7;
+    font-size: 16px;
+}
+
+.inputBx.password-input .toggle-password {
+    left: auto;
+    right: 15px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.inputBx.password-input .toggle-password:hover {
+    opacity: 1;
+}
+
+.inputBx.password-input input {
+    padding-right: 45px;
 }
 
 .inputBx input[type="submit"] {
@@ -199,38 +231,56 @@ body {
     transition: background 0.3s ease;
 }
 
+.inputBx input:has(+ .error-message[style*="display: block"]),
+.inputBx input:has(~ .error-message[style*="display: block"]) {
+    border-color: #ff3333;
+}
+
+.inputBx:has(.error-message[style*="display: block"]) {
+    margin-bottom: 45px;
+}
+
 .inputBx input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-}
-
-.inputBx span,
-.inputBx i {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
     color: var(--text-color);
-    font-size: 16px;
-    pointer-events: none;
-    user-select: none;
-    -webkit-user-select: none;
+    opacity: 0.5;
 }
 
-.inputBx .toggle-password {
-    left: auto;
-    right: 15px;
-    cursor: pointer;
-    pointer-events: all;
+.error-message {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 20px;
+    background-color: #ff3333;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    display: none;
+    z-index: 100;
+    max-width: calc(100% - 40px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    animation: fadeInUp 0.3s ease;
+    word-wrap: break-word;
+    white-space: normal;
+    line-height: 1.4;
 }
 
-.password-input {
-    position: relative;
+.error-message::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 15px;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 4px solid #ff3333;
 }
 
 .remember-forgot {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 10px;
     margin-bottom: 20px;
     color: var(--text-color);
 }
@@ -283,46 +333,25 @@ body {
     position: fixed;
     top: 20px;
     right: 20px;
-    padding: 15px 20px;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    display: none;
-    align-items: center;
-    gap: 10px;
+    padding: 15px 25px;
+    border-radius: 5px;
+    color: white;
     z-index: 1000;
-    animation: slideIn 0.3s ease;
+    display: flex;
+    align-items: center;
+    transition: 0.3s ease;
 }
 
 .notification.success {
-    border-left: 4px solid var(--success-color);
+    background-color: #4CAF50;
 }
 
 .notification.error {
-    border-left: 4px solid var(--error-color);
+    background-color: #f44336;
 }
 
-.notification i {
-    font-size: 20px;
-}
-
-.notification.success i {
-    color: var(--success-color);
-}
-
-.notification.error i {
-    color: var(--error-color);
-}
-
-@keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
+.notification span {
+    margin-left: 10px;
 }
 
 .account-page {

@@ -12,25 +12,33 @@ function showNotification(message, type = 'success') {
     }, 3000);
 }
 
+// Function to validate username
+function validateUsername(username) {
+    if (!username) {
+        return 'Username is required';
+    }
+    if (username.length < 3 || username.length > 20) {
+        return 'Username must be between 3 and 20 characters';
+    }
+    return '';
+}
+
 // Function to validate password strength
 function validatePassword(password) {
-    const minLength = 8;
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumbers = /\d/.test(password);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-
-    if (password.length < minLength) {
+    if (!password) {
+        return 'Password is required';
+    }
+    if (password.length < 8) {
         return 'Password must be at least 8 characters long';
     }
-    if (!hasUpperCase || !hasLowerCase) {
-        return 'Password must contain both uppercase and lowercase letters';
-    }
+    const hasNumbers = /\d/.test(password);
+    const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
     if (!hasNumbers) {
         return 'Password must contain at least one number';
     }
-    if (!hasSpecialChar) {
-        return 'Password must contain at least one special character';
+    if (!hasSymbol) {
+        return 'Password must contain at least one symbol';
     }
     return '';
 }
@@ -68,33 +76,6 @@ function togglePasswordVisibility(input, icon) {
         input.type = 'password';
         icon.classList.remove('fa-eye-slash');
         icon.classList.add('fa-eye');
-    }
-}
-
-// Function to handle login
-function handleLogin(event) {
-    event.preventDefault();
-    
-    const username = document.getElementById('loginUsername').value;
-    const password = document.getElementById('loginPassword').value;
-    const rememberMe = document.getElementById('rememberMe').checked;
-
-    // Here you would typically validate against a backend
-    // For demo purposes, we'll just check if fields are not empty
-    if (username && password) {
-        // Store login state
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('username', username);
-        if (rememberMe) {
-            localStorage.setItem('rememberMe', 'true');
-        }
-        
-        showNotification('Login successful! Redirecting...');
-        setTimeout(() => {
-            window.location.href = './index.html';
-        }, 1500);
-    } else {
-        showNotification('Please fill in all fields', 'error');
     }
 }
 

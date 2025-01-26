@@ -1,4 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Check if user is logged in and update username
+    try {
+        const userData = JSON.parse(localStorage.getItem('userData'));
+        
+        if (userData && userData.isLoggedIn) {
+            const userNameElements = document.querySelectorAll('.user-name');
+            userNameElements.forEach(element => {
+                element.textContent = userData.name;
+            });
+        } else {
+            window.location.href = 'account.html'; // Redirect to login if not logged in
+        }
+    } catch (error) {
+        window.location.href = 'account.html'; // Redirect to login if there's an error
+    }
+
     // Tab switching functionality
     const navButtons = document.querySelectorAll('.nav-btn');
     const sections = document.querySelectorAll('.settings-section');
