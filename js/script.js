@@ -1,34 +1,17 @@
 // Initialize all features when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    // Theme Toggle
-    const themeToggle = document.getElementById('theme-toggle');
-    const body = document.body;
+document.addEventListener('DOMContentLoaded', async () => {
+    // First include HTML content
+    await includeHTML();
 
-    if (themeToggle) {
-        // Check for saved theme preference
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            body.classList.add(savedTheme);
-        }
-
-        // Theme toggle functionality
-        themeToggle.addEventListener('click', () => {
-            if (body.classList.contains('dark-theme')) {
-                body.classList.remove('dark-theme');
-                localStorage.setItem('theme', '');
-            } else {
-                body.classList.add('dark-theme');
-                localStorage.setItem('theme', 'dark-theme');
-            }
-        });
+    // Check login state and update UI
+    if (typeof updateAccountDisplay === 'function') {
+        updateAccountDisplay();
     }
 
     // Mobile Menu Functionality
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     const navbar = document.querySelector('.navbar');
     const mobileMenuOverlay = document.querySelector('.mobile-menu-overlay');
-    const accountLink = document.querySelector('.account-link');
-    const accountDropdown = document.querySelector('.account-dropdown');
 
     if (mobileMenuBtn && navbar && mobileMenuOverlay) {
         mobileMenuBtn.addEventListener('click', function() {
@@ -43,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.style.overflow = '';
         });
 
-        // Close menu when clicking a link (except account link)
+        // Close menu when clicking a link
         const navLinks = navbar.querySelectorAll('a:not(.account-link)');
         navLinks.forEach(link => {
             link.addEventListener('click', function() {
@@ -55,6 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Account dropdown functionality
+    const accountLink = document.querySelector('.account-link');
+    const accountDropdown = document.querySelector('.account-dropdown');
+
     if (accountLink && accountDropdown) {
         accountLink.addEventListener('click', (e) => {
             e.preventDefault();
@@ -113,40 +99,64 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Theme toggle functionality
     function setTheme(isDark) {
-        document.body.classList.toggle('dark-mode', isDark);
-        localStorage.setItem('darkMode', isDark);
-        
-        // Force header background update
-        const header = document.querySelector('header');
-        header.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--background-color');
-        
-        // Update icon
-        const icon = document.querySelector('.theme-toggle i');
-        icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        try {
+            document.body.classList.toggle('dark-mode', isDark);
+            localStorage.setItem('darkMode', isDark);
+            
+            // Force header background update
+            const header = document.querySelector('header');
+            if (header) {
+                header.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--background-color');
+            }
+            
+            // Update icon
+            const icon = document.querySelector('.theme-toggle i');
+            if (icon) {
+                icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            }
+        } catch (error) {
+            console.warn('Theme toggle error:', error);
+        }
     }
 
     // Initialize theme
     function initTheme() {
-        const savedTheme = localStorage.getItem('darkMode');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        setTheme(savedTheme === 'true' || (savedTheme === null && prefersDark));
+        try {
+            const savedTheme = localStorage.getItem('darkMode');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            setTheme(savedTheme === 'true' || (savedTheme === null && prefersDark));
+        } catch (error) {
+            console.warn('Theme initialization error:', error);
+        }
     }
 
-    initTheme();
+    // Theme toggle button event listener
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.body.classList.contains('dark-mode');
+            setTheme(!isDark);
+        });
+    }
+
+    // Initialize theme after DOM is loaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initTheme);
+    } else {
+        initTheme();
+    }
 
     // Handle scroll events
     window.addEventListener('scroll', () => {
-        const header = document.querySelector('header');
-        if (header) {
-            header.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--background-color');
+        try {
+            const header = document.querySelector('header');
+            if (header) {
+                header.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--background-color');
+            }
+        } catch (error) {
+            console.warn('Scroll handler error:', error);
         }
-    });
-
-    // Theme toggle click handler
-    document.querySelector('.theme-toggle').addEventListener('click', () => {
-        const isDark = document.body.classList.contains('dark-mode');
-        setTheme(!isDark);
     });
 
     // Add to cart functionality
@@ -186,10 +196,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Header scroll effect
     window.addEventListener('scroll', () => {
         const header = document.querySelector('header');
-        if (window.scrollY > 100) {
-            header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
-        } else {
-            header.style.boxShadow = '0 2px 15px rgba(0, 0, 0, 0.1)';
+        if (header) {
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
         }
     });
 
@@ -266,6 +278,36 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Include HTML functionality
+async function includeHTML() {
+    const elements = document.getElementsByTagName("*");
+    for (let i = 0; i < elements.length; i++) {
+        const element = elements[i];
+        const file = element.getAttribute("include-html");
+        if (file) {
+            try {
+                const response = await fetch(file);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const content = await response.text();
+                element.innerHTML = content;
+                element.removeAttribute("include-html");
+                
+                // Re-run scripts in the included content
+                const scripts = element.getElementsByTagName("script");
+                for (let j = 0; j < scripts.length; j++) {
+                    const oldScript = scripts[j];
+                    const newScript = document.createElement("script");
+                    newScript.text = oldScript.text;
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                }
+            } catch (error) {
+                console.error('Error including HTML:', error);
+                element.innerHTML = 'Error loading content';
+            }
+        }
+    }
+}
+
 // Hero Image Navigation
 let currentHeroImage = 1;
 const totalHeroImages = 2;
@@ -282,18 +324,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const heroSection = document.querySelector('.hero-section');
     if (heroSection) {
         heroSection.style.setProperty('--current-hero', "url('../img/hero/hero-1.jpg')");
-    }
-});
-
-// Header scroll effect
-window.addEventListener('scroll', () => {
-    const header = document.querySelector('header');
-    if (header) {
-        if (window.scrollY > 100) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
     }
 });
 

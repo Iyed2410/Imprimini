@@ -28,12 +28,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         return;
     }
 
-    // Load products from JSON
+    // Load product from API
     let currentProduct;
     try {
-        const response = await fetch('./data/products.json');
-        const data = await response.json();
-        currentProduct = data.products.find(p => p.id === productId);
+        const response = await fetch(`http://localhost:3000/api/products/${productId}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        currentProduct = await response.json();
         console.log('Current product:', currentProduct);
     } catch (error) {
         console.error('Error loading product data:', error);

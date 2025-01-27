@@ -80,13 +80,20 @@ function togglePasswordVisibility(input, icon) {
 }
 
 // Function to handle signup
-function handleSignup(event) {
+async function handleSignup(event) {
     event.preventDefault();
     
-    const username = document.getElementById('signupUsername').value;
-    const email = document.getElementById('signupEmail').value;
+    const name = document.getElementById('signupName').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const work = document.getElementById('signupWork').value.trim();
     const password = document.getElementById('signupPassword').value;
     const confirmPassword = document.getElementById('signupConfirmPassword').value;
+
+    // Validate name
+    if (!name) {
+        showNotification('Name is required', 'error');
+        return;
+    }
 
     // Validate email format
     if (!validateEmail(email)) {
@@ -107,24 +114,109 @@ function handleSignup(event) {
         return;
     }
 
-    // Store user data (in real app, this would be sent to a backend)
-    localStorage.setItem('isLoggedIn', 'true');
-    localStorage.setItem('username', username);
-    localStorage.setItem('email', email);
+    try {
+        const response = await fetch('http://localhost:3000/api/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name,
+                email,
+                password,
+                work: work || null // Send null if work is empty
+            })
+        });
 
-    showNotification('Account created successfully! Redirecting...');
-    setTimeout(() => {
-        window.location.href = './index.html';
-    }, 1500);
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Registration failed');
+        }
+
+        showNotification('Account created successfully! Please log in.');
+        
+        // Switch to login form after successful registration
+        setTimeout(() => {
+            toggleForm('login');
+        }, 1500);
+    } catch (error) {
+        console.error('Registration error:', error);
+        showNotification(error.message, 'error');
+    }
+}
+
+// Function to handle login
+async function handleLogin(event) {
+    event.preventDefault();
+    
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const rememberMe = document.getElementById('rememberMe').checked;
+
+    // Validate email format
+    if (!validateEmail(email)) {
+        showNotification('Please enter a valid email address', 'error');
+        return;
+    }
+
+    // Validate password is not empty
+    if (!password) {
+        showNotification('Password is required', 'error');
+        return;
+    }
+
+    console.log('Login attempt:', { email, rememberMe }); // Debug log
+
+    try {
+        const response = await fetch('http://localhost:3000/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+        console.log('Login response:', data); // Debug log
+        
+        if (!response.ok) {
+            throw new Error(data.error || 'Login failed');
+        }
+
+        // Store user data
+        const userData = {
+            isLoggedIn: true,
+            token: data.token,
+            name: data.user.name,
+            email: data.user.email,
+            role: data.user.role,
+            rememberMe: rememberMe
+        };
+
+        console.log('Storing user data:', userData); // Debug log
+        localStorage.setItem('userData', JSON.stringify(userData));
+        
+        showNotification('Login successful');
+        
+        // Add a small delay to ensure localStorage is updated
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        if (data.user.role === 'admin') {
+            console.log('Admin user detected, redirecting to admin page'); // Debug log
+            window.location.href = './admin.html';
+        } else {
+            window.location.href = './index.html';
+        }
+    } catch (error) {
+        console.error('Login error:', error); // Debug log
+        showNotification(error.message, 'error');
+    }
 }
 
 // Function to handle logout
 function handleLogout() {
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('username');
-    localStorage.removeItem('email');
-    localStorage.removeItem('rememberMe');
-    
+    localStorage.removeItem('userData');
     showNotification('Logged out successfully');
     setTimeout(() => {
         window.location.href = './index.html';

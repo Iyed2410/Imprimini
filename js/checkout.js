@@ -12,6 +12,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalAmount = document.querySelector('.total .amount');
     const amountInput = document.getElementById('amount');
 
+    // Format price based on currency
+    function formatPrice(price, currency = 'TND') {
+        const formatter = new Intl.NumberFormat('fr-TN', {
+            style: 'currency',
+            currency: currency
+        });
+        return formatter.format(price);
+    }
+
     function updateOrderSummary() {
         const items = window.cart.items;
         
@@ -32,10 +41,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="summary-item">
                     <div class="item-details">
                         <h3>${item.name}</h3>
-                        <p class="item-price">${item.price.toFixed(2)} DT × ${item.quantity}</p>
+                        <p class="item-price">${formatPrice(item.price)} × ${item.quantity}</p>
                     </div>
                     <div class="item-total">
-                        ${(item.price * item.quantity).toFixed(2)} DT
+                        ${formatPrice(item.price * item.quantity)}
                     </div>
                 </div>
             `;
@@ -43,13 +52,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Calculate totals
-        const shipping = 7; // Fixed 7 DT shipping
+        const shipping = 7.00; // Fixed 7 DT shipping
         const total = subtotal + shipping;
 
         // Update summary amounts
-        subtotalAmount.textContent = subtotal.toFixed(2) + ' DT';
-        shippingAmount.textContent = shipping.toFixed(2) + ' DT';
-        totalAmount.textContent = total.toFixed(2) + ' DT';
+        subtotalAmount.textContent = formatPrice(subtotal);
+        shippingAmount.textContent = formatPrice(shipping);
+        totalAmount.textContent = formatPrice(total);
 
         // Update hidden amount input for payment processing
         if (amountInput) {

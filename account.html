@@ -1,62 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <link rel="stylesheet" href="css/account.css" />
-    <link rel="stylesheet" href="css/styles.css" />
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.9/css/unicons.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account - Imprimini</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/account.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <header>
-        <div class="header-container">
-            <a href="index.html">
-                <div class="logo-container">
-                    <img class="logo logo-light" src="img/imprimini_white.png" alt="Logo Light">
-                    <img class="logo logo-dark" src="img/imprimini_black.png" alt="Logo Dark">
-                </div>
-            </a>
-            <nav class="navbar">
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="products.html">Products</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="community.html">Community</a></li>
-                    <li class="account-item">
-                        <a href="#" class="account-link"><i class="fas fa-user"></i> Account</a>
-                        <div class="account-dropdown">
-                            <div class="dropdown-header">
-                                <span class="user-name">Not logged in</span>
-                            </div>
-                            <div class="dropdown-content">
-                                <div class="logged-out-content">
-                                    <a href="account.html" class="login-link"><i class="fas fa-sign-in-alt"></i> Login</a>
-                                </div>
-                                <div class="logged-in-content" style="display: none;">
-                                    <a href="account-settings.html"><i class="fas fa-cog"></i> Settings</a>
-                                    <a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a>
-                                    <a href="#" onclick="handleLogout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </nav>
-            <div class="cart-icon" onclick="window.location.href='cart.html'" data-count="0"></div>
-        </div>
-    </header>
+    <div include-html="includes/header.html"></div>
     <div class="mobile-menu-overlay"></div>
-
-    <button class="theme-toggle">
-        <i class="fa-solid fa-moon"></i>
-    </button>
-
-    <div id="notification" class="notification" style="display: none;">
-        <span id="notificationMessage"></span>
-    </div>
 
     <main class="auth-container">
         <!-- User Dashboard (shown when logged in) -->
@@ -97,8 +51,8 @@
                     <h2>Welcome Back</h2>
                     <form id="loginFormElement" onsubmit="handleLogin(event)">
                         <div class="inputBx">
-                            <input type="text" id="loginEmail" placeholder="Email" required>
-                            <span class="fas fa-user"></span>
+                            <input type="email" id="loginEmail" placeholder="Email" required>
+                            <span class="fas fa-envelope"></span>
                             <div class="error-message" id="emailError"></div>
                         </div>
                         <div class="inputBx password-input">
@@ -136,7 +90,7 @@
                             <div class="error-message" id="signupEmailError"></div>
                         </div>
                         <div class="inputBx">
-                            <input type="text" id="signupWork" placeholder="Work/Profession" required>
+                            <input type="text" id="signupWork" placeholder="Work/Profession (Optional)">
                             <span class="fas fa-briefcase"></span>
                             <div class="error-message" id="workError"></div>
                         </div>
@@ -161,6 +115,14 @@
             </div>
         </div>
     </main>
+
+    <div id="notification" class="notification" style="display: none;">
+        <span id="notificationMessage"></span>
+    </div>
+
+    <button class="theme-toggle">
+        <i class="fa-solid fa-moon"></i>
+    </button>
 
     <script src="js/script.js"></script>
     <script src="js/account.js"></script>

@@ -1,0 +1,170 @@
+<header>
+    <div class="header-container">
+        <div class="logo-container">
+            <img class="logo logo-light" src="img/imprimini_white.png" alt="Logo Light">
+            <img class="logo logo-dark" src="img/imprimini_black.png" alt="Logo Dark">
+        </div>
+        <div class="search-container">
+            <form class="search-form" onsubmit="handleSearch(event)">
+                <input type="text" id="search-input" placeholder="Search products..." autocomplete="off">
+                <button type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+            <div id="search-results" class="search-results"></div>
+        </div>
+        <nav class="navbar">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Products</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="community.html">Community</a></li>
+                <li class="account-item">
+                    <a href="#" class="account-link"><i class="fas fa-user"></i> Account</a>
+                    <div class="account-dropdown">
+                        <div class="dropdown-header">
+                            <span class="user-name">Not logged in</span>
+                        </div>
+                        <div class="dropdown-content">
+                            <div class="logged-out-content">
+                                <a href="account.html" class="login-link"><i class="fas fa-sign-in-alt"></i> Login</a>
+                            </div>
+                            <div class="logged-in-content" style="display: none;">
+                                <a href="account-settings.html"><i class="fas fa-cog"></i> Settings</a>
+                                <a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a>
+                                <a href="#" onclick="handleLogout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <div class="cart-icon" onclick="window.location.href='cart.html'" data-count="0">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count"></span>
+        </div>
+        <button class="mobile-menu-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</header>
+
+<script>
+// Wait for both DOM content and header inclusion
+(function initSearch() {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSearch);
+        return;
+    }
+
+    // Give a small delay to ensure everything is loaded
+    setTimeout(() => {
+        console.log('Initializing search...');
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results');
+        let searchTimeout;
+
+        if (!searchInput || !searchResults) {
+            console.error('Search elements not found:', {
+                searchInput: !!searchInput,
+                searchResults: !!searchResults
+            });
+            return;
+        }
+
+        console.log('Search elements found');
+
+        window.handleSearch = async function(event) {
+            if (event) {
+                event.preventDefault();
+            }
+            const query = searchInput.value.trim();
+            console.log('Searching for:', query);
+            
+            if (!query) {
+                hideSearchResults();
+                return;
+            }
+
+            try {
+                console.log('Making API request...');
+                const response = await fetch(`http://localhost:3000/api/products/search?query=${encodeURIComponent(query)}`);
+                console.log('API response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`Search failed with status: ${response.status}`);
+                }
+                
+                const products = await response.json();
+                console.log('Search results:', products);
+                displaySearchResults(products);
+            } catch (error) {
+                console.error('Search error:', error);
+                displaySearchResults([]); // Show empty results on error
+            }
+        }
+
+        function displaySearchResults(products) {
+            console.log('Displaying results:', products.length);
+            searchResults.innerHTML = '';
+            
+            if (products.length === 0) {
+                searchResults.innerHTML = `
+                    <div class="search-result-item">
+                        <p>No products found</p>
+                    </div>
+                `;
+            } else {
+                products.forEach(product => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'search-result-item';
+                    resultItem.onclick = () => window.location.href = `customize.html?product=${product.id}`;
+                    
+                    resultItem.innerHTML = `
+                        <img src="${product.image || ''}" alt="${product.name}">
+                        <div class="search-result-info">
+                            <h4>${product.name}</h4>
+                            <p>${product.description || ''}</p>
+                        </div>
+                        <div class="search-result-price">${product.price} DT</div>
+                    `;
+                    
+                    searchResults.appendChild(resultItem);
+                });
+            }
+            
+            searchResults.classList.add('active');
+            console.log('Search results displayed');
+        }
+
+        function hideSearchResults() {
+            searchResults.classList.remove('active');
+        }
+
+        // Add input event listener with debouncing
+        searchInput.addEventListener('input', () => {
+            console.log('Input event triggered');
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                handleSearch();
+            }, 300);
+        });
+
+        // Hide search results when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!event.target.closest('.search-container')) {
+                hideSearchResults();
+            }
+        });
+
+        // Clear search results when pressing Escape
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                hideSearchResults();
+                searchInput.blur();
+            }
+        });
+    }, 100);
+})();
+</script>

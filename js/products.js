@@ -1,14 +1,20 @@
-// Load products from JSON file
+// Load products from backend API
 let products = [];
 
 async function loadProducts() {
     try {
-        const response = await fetch('./data/products.json');
+        const response = await fetch('http://localhost:3000/api/products');
         const data = await response.json();
-        products = data.products;
-        renderProducts(); // Render products after loading
+        
+        if (data.success) {
+            products = data.products;
+            renderProducts(); // Render products after loading
+        } else {
+            throw new Error(data.message || 'Failed to load products');
+        }
     } catch (error) {
         console.error('Error loading products:', error);
+        showNotification('Failed to load products. Please try again.', 'error');
     }
 }
 
@@ -50,7 +56,7 @@ function renderProducts(productsToRender = products) {
             <div class="product-info">
                 <h3 class="product-title">${product.name}</h3>
                 <p class="product-description">${product.description}</p>
-                <p class="product-price">${product.price} DT</p>
+                <p class="product-price">${formatPrice(product.price)}</p>
             </div>
         `;
 
@@ -112,6 +118,15 @@ function renderProducts(productsToRender = products) {
     if (typeof AOS !== 'undefined') {
         AOS.refresh();
     }
+}
+
+// Format price based on currency
+function formatPrice(price, currency = 'TND') {
+    const formatter = new Intl.NumberFormat('fr-TN', {
+        style: 'currency',
+        currency: currency
+    });
+    return formatter.format(price);
 }
 
 // Add notification function if not exists

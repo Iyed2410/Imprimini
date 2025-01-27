@@ -32,7 +32,8 @@ class Cart {
     updateCartCount() {
         const cartCount = document.querySelector('.cart-icon');
         if (cartCount) {
-            cartCount.setAttribute('data-count', this.items.length.toString());
+            const totalItems = this.items.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            cartCount.setAttribute('data-count', totalItems.toString());
         }
     }
 
@@ -46,8 +47,8 @@ class Cart {
             const shipping = 7.00; // Fixed shipping cost
             const total = subtotal + shipping;
 
-            subtotalElement.textContent = subtotal.toFixed(2) + ' DT';
-            totalElement.textContent = total.toFixed(2) + ' DT';
+            subtotalElement.textContent = formatPrice(subtotal);
+            totalElement.textContent = formatPrice(total);
             
             if (cartSummary) {
                 cartSummary.style.display = this.items.length > 0 ? 'block' : 'none';
@@ -127,7 +128,7 @@ class Cart {
 
     initDroneButton(droneButton) {
         let processing = false;
-        droneButton.addEventListener('click', () => {
+        droneButton.addEventListener('click', async () => {
             if (processing) return;
             
             // Check if cart is empty
@@ -136,33 +137,20 @@ class Cart {
                 return;
             }
 
-            let reverting = false;
             processing = true;
             
-            const $endListener = document.createElement('div');
-            $endListener.classList.add('demo-transitionend-listener');
-            droneButton.appendChild($endListener);
-            
+            // Add processing class to start animation
             droneButton.classList.add('s--processing');
             
-            $endListener.addEventListener('transitionend', () => {
-                if (reverting) return;
-                reverting = true;
-                droneButton.classList.add('s--reverting');
-            });
+            // Wait for the full animation sequence (6.5 seconds total)
+            await new Promise(resolve => setTimeout(resolve, 6500));
             
-            setTimeout(() => {
-                droneButton.removeChild($endListener);
-                droneButton.classList.remove('s--processing', 's--reverting');
-                processing = false;
-                
-                // Store cart total for checkout page
-                const total = this.getTotalPrice();
-                localStorage.setItem('cartTotal', total.toFixed(2));
-                
-                // Go to checkout page
-                window.location.href = 'checkout.html';
-            }, 6000);
+            // Remove processing class and reset
+            droneButton.classList.remove('s--processing');
+            processing = false;
+            
+            // Redirect to checkout
+            window.location.href = 'checkout.html';
         });
     }
 
@@ -211,28 +199,41 @@ class Cart {
         }
     }
 
-    updateQuantity(cartId, newQuantity) {
-        const item = this.items.find(item => item.cartId === cartId);
-        if (!item) return;
+    increaseQuantity(cartId) {
+        const item = this.items.find(i => i.cartId === cartId);
+        if (item) {
+            item.quantity = (item.quantity || 1) + 1;
+            this.saveCart();
+            this.renderCart();
+            this.updateCartCount();
+            showNotification('Quantity updated', 'success');
+        }
+    }
 
-        newQuantity = Math.max(1, Math.min(99, parseInt(newQuantity) || 1));
-        if (item.quantity === newQuantity) return;
-
-        item.quantity = newQuantity;
-        this.saveCart();
-        this.renderCart();
+    decreaseQuantity(cartId) {
+        const item = this.items.find(i => i.cartId === cartId);
+        if (item) {
+            if (item.quantity > 1) {
+                item.quantity--;
+                this.saveCart();
+                this.renderCart();
+                this.updateCartCount();
+                showNotification('Quantity updated', 'success');
+            } else {
+                this.removeItem(cartId);
+            }
+        }
     }
 
     removeItem(cartId) {
-        const initialLength = this.items.length;
-        this.items = this.items.filter(item => item.cartId !== cartId);
-        
-        if (this.items.length !== initialLength) {
+        const index = this.items.findIndex(i => i.cartId === cartId);
+        if (index !== -1) {
+            this.items.splice(index, 1);
             this.saveCart();
             this.renderCart();
-            return true;
+            this.updateCartCount();
+            showNotification('Item removed from cart', 'success');
         }
-        return false;
     }
 
     renderCart() {
@@ -254,16 +255,16 @@ class Cart {
                     <h3>${item.name}</h3>
                     ${item.customImage ? '<p class="customized-tag">(Customized)</p>' : ''}
                     <div class="quantity-controls">
-                        <button onclick="window.cart.updateQuantity(${item.cartId}, ${(item.quantity || 1) - 1})" class="quantity-btn minus">-</button>
+                        <button onclick="window.cart.decreaseQuantity(${item.cartId})" class="quantity-btn minus">-</button>
                         <input type="number" 
                                class="quantity-input" 
                                value="${item.quantity || 1}" 
                                min="1" 
                                max="99"
                                onchange="window.cart.updateQuantity(${item.cartId}, this.value)">
-                        <button onclick="window.cart.updateQuantity(${item.cartId}, ${(item.quantity || 1) + 1})" class="quantity-btn plus">+</button>
+                        <button onclick="window.cart.increaseQuantity(${item.cartId})" class="quantity-btn plus">+</button>
                     </div>
-                    <p class="item-price">${(item.price * (item.quantity || 1)).toFixed(2)} DT</p>
+                    <p class="item-price">${formatPrice(item.price * (item.quantity || 1))}</p>
                 </div>
                 <button onclick="window.cart.removeItem(${item.cartId})" class="remove-item">
                     <i class="fas fa-trash"></i>
@@ -313,6 +314,15 @@ class Cart {
             img.onerror = reject;
         });
     }
+}
+
+// Format price based on currency
+function formatPrice(price, currency = 'TND') {
+    const formatter = new Intl.NumberFormat('fr-TN', {
+        style: 'currency',
+        currency: currency
+    });
+    return formatter.format(price);
 }
 
 // Initialize cart when the script loads

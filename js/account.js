@@ -32,13 +32,14 @@ function clearFieldErrors() {
     });
 }
 
-// Function to validate username
-function validateUsername(username) {
-    if (!username) {
+// Function to validate email
+function validateEmail(email) {
+    if (!email) {
         return 'Email is required';
     }
-    if (username.length < 3 || username.length > 20) {
-        return 'Username must be between 3 and 20 characters';
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return 'Please enter a valid email address';
     }
     return '';
 }
@@ -100,17 +101,46 @@ function updateAccountDisplay() {
     try {
         const userData = JSON.parse(localStorage.getItem('userData'));
         if (userData && userData.isLoggedIn) {
+            // Update account link and name
             accountLink.innerHTML = `<i class="fas fa-user"></i> ${userData.name}`;
             accountLink.href = '#';
             userName.textContent = userData.name;
             loggedOutContent.style.display = 'none';
             loggedInContent.style.display = 'block';
+
+            // Check if we're on the admin page
+            const isAdminPage = window.location.pathname.endsWith('admin.html');
+
+            // Update dropdown content with admin link if user is admin
+            const adminLinkHtml = userData.role === 'admin' 
+                ? `<a href="admin.html" class="admin-link ${isAdminPage ? 'active' : ''}">
+                    <i class="fas fa-shield-alt"></i> Admin Dashboard
+                   </a>`
+                : '';
+
+            loggedInContent.innerHTML = `
+                ${adminLinkHtml}
+                <a href="account-settings.html"><i class="fas fa-cog"></i> Settings</a>
+                <a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a>
+                <a href="#" onclick="handleLogout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            `;
+
+            // If not admin and on admin page, redirect to home
+            if (!userData.role === 'admin' && isAdminPage) {
+                window.location.href = 'index.html';
+            }
         } else {
+            // Reset to default state
             accountLink.innerHTML = `<i class="fas fa-user"></i> Account`;
             accountLink.href = 'account.html';
             userName.textContent = 'Not logged in';
             loggedOutContent.style.display = 'block';
             loggedInContent.style.display = 'none';
+
+            // If on admin page, redirect to login
+            if (window.location.pathname.endsWith('admin.html')) {
+                window.location.href = 'account.html';
+            }
         }
     } catch (error) {
         console.error('Error updating account display:', error);
@@ -147,7 +177,7 @@ function toggleForm(formType) {
 }
 
 // Handle login form submission
-function handleLogin(event) {
+async function handleLogin(event) {
     event.preventDefault();
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
@@ -155,54 +185,49 @@ function handleLogin(event) {
     // Clear any existing errors
     clearFieldErrors();
     
-    // Validate input
-    const usernameError = validateUsername(email);
-    const passwordError = validatePassword(password);
+    try {
+        const response = await fetch('http://localhost:3000/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        });
 
-    // Check for validation errors and show them under the fields
-    let hasError = false;
-    if (usernameError) {
-        showFieldError('email', usernameError);
-        hasError = true;
-    }
-    if (passwordError) {
-        showFieldError('password', passwordError);
-        hasError = true;
-    }
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.error || 'Login failed');
+        }
 
-    if (hasError) {
-        return;
+        // Store user data in localStorage
+        const userData = {
+            isLoggedIn: true,
+            token: data.token,
+            name: data.user.name,
+            email: data.user.email,
+            role: data.user.role
+        };
+        
+        localStorage.setItem('userData', JSON.stringify(userData));
+        
+        // Update UI
+        updateAccountDisplay();
+        
+        // Show success message
+        showNotification('Login successful!', 'success');
+        
+        // Redirect based on role
+        setTimeout(() => {
+            window.location.href = userData.role === 'admin' ? 'admin.html' : 'index.html';
+        }, 1500);
+    } catch (error) {
+        showNotification(error.message, 'error');
     }
-
-    // Get name from email (everything before @)
-    const name = email.split('@')[0];
-    
-    // Check if it's the admin account
-    const isAdmin = email === 'admin@imprimini.com' && password === 'Admin@123';
-    
-    // Store user data in localStorage
-    const userData = {
-        email,
-        name,
-        isLoggedIn: true,
-        role: isAdmin ? 'admin' : 'user'
-    };
-    localStorage.setItem('userData', JSON.stringify(userData));
-    
-    // Update UI
-    updateAccountDisplay();
-    
-    // Show success message
-    showNotification('Login successful!', 'success');
-    
-    // Redirect based on role
-    setTimeout(() => {
-        window.location.href = isAdmin ? 'admin.html' : 'index.html';
-    }, 1500);
 }
 
 // Handle signup form submission
-function handleSignup(event) {
+async function handleSignup(event) {
     event.preventDefault();
     const name = document.getElementById('signupName').value.trim();
     const email = document.getElementById('signupEmail').value.trim();
@@ -214,7 +239,7 @@ function handleSignup(event) {
     
     // Validate all fields
     const nameError = validateName(name);
-    const emailError = validateUsername(email);
+    const emailError = validateEmail(email);
     const workError = validateWork(work);
     const passwordError = validatePassword(password);
 
@@ -241,25 +266,50 @@ function handleSignup(event) {
         return;
     }
 
-    // Store user data in localStorage
-    const userData = {
-        name,
-        email,
-        work,
-        isLoggedIn: true
-    };
-    localStorage.setItem('userData', JSON.stringify(userData));
-    
-    // Update UI
-    updateAccountDisplay();
-    
-    // Show success message
-    showNotification('Account created successfully!', 'success');
-    
-    // Redirect to home page after a short delay
-    setTimeout(() => {
-        window.location.href = 'index.html';
-    }, 1500);
+    try {
+        // Send registration request to backend
+        const response = await fetch('http://localhost:3000/api/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name,
+                email,
+                password,
+                work
+            })
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.error || 'Registration failed');
+        }
+
+        // Store user data and token in localStorage
+        const userData = {
+            name,
+            email,
+            work,
+            token: data.token,
+            isLoggedIn: true
+        };
+        localStorage.setItem('userData', JSON.stringify(userData));
+        
+        // Update UI
+        updateAccountDisplay();
+        
+        // Show success message
+        showNotification('Account created successfully!', 'success');
+        
+        // Redirect to home page after a short delay
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1500);
+    } catch (error) {
+        showNotification(error.message, 'error');
+    }
 }
 
 // Handle logout
@@ -320,7 +370,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (loginEmail) {
         loginEmail.addEventListener('input', function() {
-            const error = validateUsername(this.value.trim());
+            const error = validateEmail(this.value.trim());
             showFieldError('email', error);
         });
     }
@@ -347,7 +397,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (signupEmail) {
         signupEmail.addEventListener('input', function() {
-            const error = validateUsername(this.value.trim());
+            const error = validateEmail(this.value.trim());
             showFieldError('signupEmail', error);
         });
     }

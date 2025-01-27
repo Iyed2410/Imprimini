@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - Imprimini</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <!-- Include header -->
+    <div id="header"></div>
+
+    <main class="product-details-container">
+        <div id="product-details" class="product-details">
+            <div class="loading">Loading...</div>
+        </div>
+    </main>
+
+    <script src="js/include.js"></script>
+    <script>
+        // Include header
+        includeHTML();
+
+        // Get product ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        // Function to load product details
+        async function loadProductDetails() {
+            try {
+                const response = await fetch(`http://localhost:3000/api/products/${productId}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const product = await response.json();
+                
+                // Update the product details in the DOM
+                const productDetails = document.getElementById('product-details');
+                productDetails.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.image}" alt="${product.name}">
+                    </div>
+                    <div class="product-info">
+                        <h1>${product.name}</h1>
+                        <p class="description">${product.description}</p>
+                        <p class="price">${product.price} DT</p>
+                        <div class="colors">
+                            ${product.colors ? product.colors.map(color => `
+                                <div class="color-option">
+                                    <img src="${color.image}" alt="${color.name}">
+                                    <span>${color.name}</span>
+                                </div>
+                            `).join('') : ''}
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart(${product.id})">
+                            Add to Cart
+                        </button>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('product-details').innerHTML = `
+                    <div class="error">
+                        <h2>Error Loading Product</h2>
+                        <p>Sorry, we couldn't load the product details. Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Load product details when page loads
+        if (productId) {
+            loadProductDetails();
+        } else {
+            document.getElementById('product-details').innerHTML = `
+                <div class="error">
+                    <h2>Product Not Found</h2>
+                    <p>Sorry, we couldn't find the product you're looking for.</p>
+                </div>
+            `;
+        }
+
+        // Function to add product to cart
+        function addToCart(productId) {
+            // Get existing cart items from localStorage
+            let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            
+            // Check if product is already in cart
+            const existingItem = cartItems.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cartItems.push({
+                    id: productId,
+                    quantity: 1
+                });
+            }
+            
+            // Save updated cart back to localStorage
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            
+            // Update cart count in header
+            const cartCount = document.querySelector('.cart-count');
+            if (cartCount) {
+                cartCount.textContent = cartItems.reduce((total, item) => total + item.quantity, 0);
+            }
+            
+            // Show success message
+            alert('Product added to cart!');
+        }
+    </script>
+
+    <style>
+        .product-details-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .product-details {
+            display: flex;
+            gap: 2rem;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .product-image {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-info h1 {
+            margin: 0 0 1rem;
+            color: #333;
+        }
+
+        .description {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+
+        .colors {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .color-option {
+            text-align: center;
+        }
+
+        .color-option img {
+            width: 50px;
+            height: 50px;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .color-option span {
+            display: block;
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        .add-to-cart {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .add-to-cart:hover {
+            background: #2980b9;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .error {
+            text-align: center;
+            padding: 2rem;
+            color: #e74c3c;
+        }
+
+        @media (max-width: 768px) {
+            .product-details {
+                flex-direction: column;
+            }
+
+            .product-image {
+                max-width: 100%;
+            }
+        }
+    </style>
+</body>
+</html>

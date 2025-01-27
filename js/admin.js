@@ -1,4 +1,60 @@
+// API Base URL
+const API_URL = 'http://localhost:3000/api';
+
+// Get token from localStorage
+function getToken() {
+    const userData = JSON.parse(localStorage.getItem('userData'));
+    console.log('User Data:', userData); // Debug log
+    return userData?.token;
+}
+
+// API calls with authentication
+async function apiCall(endpoint, options = {}) {
+    const token = getToken();
+    console.log('Token:', token); // Debug log
+    
+    if (!token) {
+        console.log('No token found'); // Debug log
+        showNotification('Authentication required', 'error');
+        window.location.href = 'index.html';
+        return;
+    }
+
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        ...options.headers
+    };
+    
+    console.log('Request Headers:', headers); // Debug log
+
+    try {
+        const response = await fetch(`${API_URL}${endpoint}`, {
+            ...options,
+            headers
+        });
+        
+        console.log('Response:', response); // Debug log
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Something went wrong');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('API Error:', error); // Debug log
+        showNotification(error.message, 'error');
+        if (error.message.includes('token')) {
+            window.location.href = 'index.html';
+        }
+        throw error;
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM Content Loaded'); // Debug log
+    
     // Check if user is admin
     checkAdminAccess();
 
@@ -10,18 +66,24 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Check if user has admin access
-function checkAdminAccess() {
+async function checkAdminAccess() {
     try {
         const userData = JSON.parse(localStorage.getItem('userData'));
-        if (!userData || !userData.isLoggedIn || userData.role !== 'admin') {
-            // If not admin, redirect to home page
+        console.log('Checking admin access, userData:', userData); // Debug log
+        
+        if (!userData || !userData.token || userData.role !== 'admin') {
+            console.log('Access denied: Missing or invalid credentials'); // Debug log
             showNotification('Access denied. Admin privileges required.', 'error');
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 1500);
+            return false;
         }
+        return true;
     } catch (error) {
+        console.error('Admin access check error:', error); // Debug log
         window.location.href = 'index.html';
+        return false;
     }
 }
 
@@ -49,14 +111,23 @@ function initializeTabs() {
 }
 
 // Load dashboard data
-function loadDashboardData() {
-    // For demonstration, using mock data
-    updateStats({
-        users: 150,
-        orders: 75,
-        products: 45,
-        revenue: 15000
-    });
+async function loadDashboardData() {
+    try {
+        const [users, orders, products] = await Promise.all([
+            apiCall('/users'),
+            apiCall('/orders'),
+            apiCall('/products')
+        ]);
+
+        updateStats({
+            users: users.length,
+            orders: orders.length,
+            products: products.length,
+            revenue: orders.reduce((sum, order) => sum + Number(order.total), 0)
+        });
+    } catch (error) {
+        console.error('Error loading dashboard data:', error);
+    }
 }
 
 // Update dashboard statistics
@@ -83,114 +154,147 @@ function loadSectionData(section) {
 }
 
 // Load users data
-function loadUsers() {
-    // Mock user data
-    const users = [
-        { id: 1, name: 'John Doe', email: 'john@example.com', role: 'user' },
-        { id: 2, name: 'Admin User', email: 'admin@imprimini.com', role: 'admin' }
-    ];
-
-    const tbody = document.getElementById('users-table-body');
-    tbody.innerHTML = users.map(user => `
-        <tr>
-            <td>${user.id}</td>
-            <td>${user.name}</td>
-            <td>${user.email}</td>
-            <td>${user.role}</td>
-            <td>
-                <button class="action-btn edit-btn" onclick="editUser(${user.id})"><i class="fas fa-edit"></i></button>
-                <button class="action-btn delete-btn" onclick="deleteUser(${user.id})"><i class="fas fa-trash"></i></button>
-            </td>
-        </tr>
-    `).join('');
+async function loadUsers() {
+    try {
+        const users = await apiCall('/users');
+        const tbody = document.getElementById('users-table-body');
+        tbody.innerHTML = users.map(user => `
+            <tr>
+                <td>${user.id}</td>
+                <td>${user.name}</td>
+                <td>${user.email}</td>
+                <td>${user.role}</td>
+                <td>
+                    <button class="action-btn edit-btn" onclick="editUser(${user.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn delete-btn" onclick="deleteUser(${user.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading users:', error);
+    }
 }
 
 // Load orders data
-function loadOrders() {
-    // Mock order data
-    const orders = [
-        { id: 'ORD001', customer: 'John Doe', date: '2024-01-26', status: 'Pending', total: 150 },
-        { id: 'ORD002', customer: 'Jane Smith', date: '2024-01-25', status: 'Completed', total: 250 }
-    ];
+async function loadOrders() {
+    try {
+        const orders = await apiCall('/orders');
+        const tbody = document.getElementById('orders-table-body');
+        tbody.innerHTML = orders.map(order => `
+            <tr>
+                <td>${order.id}</td>
+                <td>${order.customer_name}</td>
+                <td>${new Date(order.created_at).toLocaleDateString()}</td>
+                <td>${order.status}</td>
+                <td>$${Number(order.total).toLocaleString()}</td>
+                <td>
+                    <button class="action-btn edit-btn" onclick="editOrder(${order.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn delete-btn" onclick="deleteOrder(${order.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading orders:', error);
+    }
+}
 
-    const tbody = document.getElementById('orders-table-body');
-    tbody.innerHTML = orders.map(order => `
-        <tr>
-            <td>${order.id}</td>
-            <td>${order.customer}</td>
-            <td>${order.date}</td>
-            <td>${order.status}</td>
-            <td>$${order.total}</td>
-            <td>
-                <button class="action-btn edit-btn" onclick="editOrder('${order.id}')"><i class="fas fa-edit"></i></button>
-                <button class="action-btn delete-btn" onclick="deleteOrder('${order.id}')"><i class="fas fa-trash"></i></button>
-            </td>
-        </tr>
-    `).join('');
+// Format price based on currency
+function formatPrice(price, currency = 'TND') {
+    const formatter = new Intl.NumberFormat('fr-TN', {
+        style: 'currency',
+        currency: currency
+    });
+    return formatter.format(price);
 }
 
 // Load products data
-function loadProducts() {
-    // Mock product data
-    const products = [
-        { id: 1, name: 'Business Cards', price: 29.99, stock: 1000 },
-        { id: 2, name: 'Flyers', price: 49.99, stock: 500 }
-    ];
+async function loadProducts() {
+    try {
+        const products = await apiCall('/products');
+        const productsTable = document.getElementById('products-table');
+        if (!productsTable) return;
 
-    const tbody = document.getElementById('products-table-body');
-    tbody.innerHTML = products.map(product => `
-        <tr>
-            <td>${product.id}</td>
-            <td>${product.name}</td>
-            <td>$${product.price}</td>
-            <td>${product.stock}</td>
-            <td>
-                <button class="action-btn edit-btn" onclick="editProduct(${product.id})"><i class="fas fa-edit"></i></button>
-                <button class="action-btn delete-btn" onclick="deleteProduct(${product.id})"><i class="fas fa-trash"></i></button>
-            </td>
-        </tr>
-    `).join('');
+        const tbody = productsTable.querySelector('tbody');
+        tbody.innerHTML = products.map(product => `
+            <tr>
+                <td>${product.id}</td>
+                <td>${product.name}</td>
+                <td>${formatPrice(product.price)}</td>
+                <td>${product.stock}</td>
+                <td>
+                    <button onclick="editProduct(${product.id})" class="btn-edit">Edit</button>
+                    <button onclick="deleteProduct(${product.id})" class="btn-delete">Delete</button>
+                </td>
+            </tr>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading products:', error);
+        showNotification('Error loading products', 'error');
+    }
 }
 
 // CRUD Operations
-function editUser(id) {
+async function editUser(id) {
     // Implement user editing functionality
     console.log('Editing user:', id);
 }
 
-function deleteUser(id) {
+async function deleteUser(id) {
     if (confirm('Are you sure you want to delete this user?')) {
-        console.log('Deleting user:', id);
-        showNotification('User deleted successfully');
+        try {
+            await apiCall(`/users/${id}`, { method: 'DELETE' });
+            showNotification('User deleted successfully');
+            loadUsers();
+        } catch (error) {
+            console.error('Error deleting user:', error);
+        }
     }
 }
 
-function editOrder(id) {
+async function editOrder(id) {
     // Implement order editing functionality
     console.log('Editing order:', id);
 }
 
-function deleteOrder(id) {
+async function deleteOrder(id) {
     if (confirm('Are you sure you want to delete this order?')) {
-        console.log('Deleting order:', id);
-        showNotification('Order deleted successfully');
+        try {
+            await apiCall(`/orders/${id}`, { method: 'DELETE' });
+            showNotification('Order deleted successfully');
+            loadOrders();
+        } catch (error) {
+            console.error('Error deleting order:', error);
+        }
     }
 }
 
-function editProduct(id) {
+async function editProduct(id) {
     // Implement product editing functionality
     console.log('Editing product:', id);
 }
 
-function deleteProduct(id) {
+async function deleteProduct(id) {
     if (confirm('Are you sure you want to delete this product?')) {
-        console.log('Deleting product:', id);
-        showNotification('Product deleted successfully');
+        try {
+            await apiCall(`/products/${id}`, { method: 'DELETE' });
+            showNotification('Product deleted successfully');
+            loadProducts();
+        } catch (error) {
+            console.error('Error deleting product:', error);
+        }
     }
 }
 
 // Settings form submission
-document.getElementById('admin-settings-form')?.addEventListener('submit', function(e) {
+document.getElementById('admin-settings-form')?.addEventListener('submit', async function(e) {
     e.preventDefault();
     
     const formData = {
@@ -199,6 +303,13 @@ document.getElementById('admin-settings-form')?.addEventListener('submit', funct
         currency: document.getElementById('currency').value
     };
 
-    console.log('Saving settings:', formData);
-    showNotification('Settings saved successfully');
+    try {
+        await apiCall('/settings', {
+            method: 'POST',
+            body: JSON.stringify(formData)
+        });
+        showNotification('Settings saved successfully');
+    } catch (error) {
+        console.error('Error saving settings:', error);
+    }
 });
