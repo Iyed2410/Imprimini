@@ -215,29 +215,53 @@ function formatPrice(price, currency = 'TND') {
     return formatter.format(price);
 }
 
-// Load products data
+// Function to load products
 async function loadProducts() {
     try {
-        const products = await apiCall('/products');
-        const productsTable = document.getElementById('products-table');
-        if (!productsTable) return;
-
-        const tbody = productsTable.querySelector('tbody');
-        tbody.innerHTML = products.map(product => `
-            <tr>
+        const response = await fetch('http://localhost:3000/api/products');
+        const products = await response.json();
+        
+        const tableBody = document.getElementById('products-table-body');
+        tableBody.innerHTML = ''; // Clear existing rows
+        
+        products.forEach(product => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
                 <td>${product.id}</td>
-                <td>${product.name}</td>
-                <td>${formatPrice(product.price)}</td>
-                <td>${product.stock}</td>
                 <td>
-                    <button onclick="editProduct(${product.id})" class="btn-edit">Edit</button>
-                    <button onclick="deleteProduct(${product.id})" class="btn-delete">Delete</button>
+                    <div class="product-cell">
+                        <img src="${product.image}" alt="${product.name}" class="product-thumbnail">
+                        <div class="product-info">
+                            <div class="product-name">${product.name}</div>
+                            <div class="product-description">${product.description}</div>
+                        </div>
+                    </div>
                 </td>
-            </tr>
-        `).join('');
+                <td>${formatPrice(product.price)}</td>
+                <td>${product.stock || 'N/A'}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="edit-btn" onclick="openEditModal(${JSON.stringify(product).replace(/"/g, '&quot;')})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="delete-btn" onclick="deleteProduct(${product.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+
+        // Update products count in overview
+        const productsCount = document.querySelector('#overview-section .stat-card:nth-child(3) .stat-number');
+        if (productsCount) {
+            productsCount.textContent = products.length;
+        }
     } catch (error) {
         console.error('Error loading products:', error);
-        showNotification('Error loading products', 'error');
+        showNotification('Failed to load products', 'error');
     }
 }
 
@@ -276,9 +300,67 @@ async function deleteOrder(id) {
     }
 }
 
-async function editProduct(id) {
-    // Implement product editing functionality
-    console.log('Editing product:', id);
+function openEditModal(product) {
+    const modal = document.getElementById('editProductModal');
+    const form = document.getElementById('editProductForm');
+    
+    // Set form values
+    document.getElementById('editProductId').value = product.id;
+    document.getElementById('editProductName').value = product.name;
+    document.getElementById('editProductPrice').value = product.price;
+    document.getElementById('editProductStock').value = product.stock || 0;
+    document.getElementById('editProductDescription').value = product.description;
+    
+    modal.style.display = "block";
+
+    // Close modal when clicking the close button
+    const closeBtn = modal.querySelector('.close');
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // Handle form submission
+    form.onsubmit = async function(e) {
+        e.preventDefault();
+        
+        const updatedProduct = {
+            name: document.getElementById('editProductName').value,
+            price: parseFloat(document.getElementById('editProductPrice').value),
+            stock: parseInt(document.getElementById('editProductStock').value),
+            description: document.getElementById('editProductDescription').value
+        };
+
+        try {
+            const response = await fetch(`http://localhost:3000/api/products/${product.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedProduct)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to update product');
+            }
+
+            const result = await response.json();
+            console.log('Product updated:', result);
+            showNotification('Product updated successfully', 'success');
+            modal.style.display = "none";
+            loadProducts(); // Reload the products table
+        } catch (error) {
+            console.error('Error updating product:', error);
+            showNotification(error.message || 'Failed to update product', 'error');
+        }
+    };
 }
 
 async function deleteProduct(id) {
@@ -313,3 +395,17 @@ document.getElementById('admin-settings-form')?.addEventListener('submit', async
         console.error('Error saving settings:', error);
     }
 });
+
+// Show notification function (if not already defined)
+function showNotification(message, type = 'success') {
+    const notification = document.getElementById('notification');
+    const notificationMessage = document.getElementById('notificationMessage');
+    
+    notification.className = `notification ${type}`;
+    notificationMessage.textContent = message;
+    notification.style.display = 'block';
+
+    setTimeout(() => {
+        notification.style.display = 'none';
+    }, 3000);
+}

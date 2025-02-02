@@ -44,7 +44,7 @@ function validateEmail(email) {
     return '';
 }
 
-// Function to validate password strength
+// Function to validate password
 function validatePassword(password) {
     if (!password) {
         return 'Password is required';
@@ -102,9 +102,9 @@ function updateAccountDisplay() {
         const userData = JSON.parse(localStorage.getItem('userData'));
         if (userData && userData.isLoggedIn) {
             // Update account link and name
-            accountLink.innerHTML = `<i class="fas fa-user"></i> ${userData.name}`;
+            accountLink.innerHTML = `<i class="fas fa-user"></i> ${userData.username}`;
             accountLink.href = '#';
-            userName.textContent = userData.name;
+            userName.textContent = userData.username;
             loggedOutContent.style.display = 'none';
             loggedInContent.style.display = 'block';
 
@@ -204,7 +204,9 @@ async function handleLogin(event) {
         const userData = {
             isLoggedIn: true,
             token: data.token,
-            name: data.user.name,
+            id: data.user.id,
+            name: data.user.username,
+            username: data.user.username,
             email: data.user.email,
             role: data.user.role
         };
@@ -229,44 +231,50 @@ async function handleLogin(event) {
 // Handle signup form submission
 async function handleSignup(event) {
     event.preventDefault();
-    const name = document.getElementById('signupName').value.trim();
-    const email = document.getElementById('signupEmail').value.trim();
-    const work = document.getElementById('signupWork').value.trim();
-    const password = document.getElementById('signupPassword').value;
     
-    // Clear any existing errors
-    clearFieldErrors();
+    // Get the form and submit button
+    const form = document.getElementById('signupFormElement');
+    const submitBtn = form.querySelector('input[type="submit"]');
     
-    // Validate all fields
-    const nameError = validateName(name);
-    const emailError = validateEmail(email);
-    const workError = validateWork(work);
-    const passwordError = validatePassword(password);
-
-    // Check for validation errors and show them under the fields
-    let hasError = false;
-    if (nameError) {
-        showFieldError('name', nameError);
-        hasError = true;
-    }
-    if (emailError) {
-        showFieldError('signupEmail', emailError);
-        hasError = true;
-    }
-    if (workError) {
-        showFieldError('work', workError);
-        hasError = true;
-    }
-    if (passwordError) {
-        showFieldError('signupPassword', passwordError);
-        hasError = true;
-    }
-
-    if (hasError) {
-        return;
-    }
+    // Prevent double submission
+    if (submitBtn.disabled) return;
+    submitBtn.disabled = true;
 
     try {
+        const name = document.getElementById('signupName').value.trim();
+        const email = document.getElementById('signupEmail').value.trim();
+        const password = document.getElementById('signupPassword').value;
+        
+        // Clear any existing errors
+        clearFieldErrors();
+        
+        // Validate all fields
+        const nameError = validateName(name);
+        const emailError = validateEmail(email);
+        const passwordError = validatePassword(password);
+
+        // Check for validation errors and show them under the fields
+        let hasError = false;
+        if (nameError) {
+            showFieldError('name', nameError);
+            hasError = true;
+        }
+        if (emailError) {
+            showFieldError('signupEmail', emailError);
+            hasError = true;
+        }
+        if (passwordError) {
+            showFieldError('signupPassword', passwordError);
+            hasError = true;
+        }
+
+        if (hasError) {
+            submitBtn.disabled = false;
+            return;
+        }
+
+        console.log('Sending registration request...', { name, email });
+
         // Send registration request to backend
         const response = await fetch('http://localhost:3000/api/auth/register', {
             method: 'POST',
@@ -276,8 +284,7 @@ async function handleSignup(event) {
             body: JSON.stringify({
                 name,
                 email,
-                password,
-                work
+                password
             })
         });
 
@@ -287,13 +294,17 @@ async function handleSignup(event) {
             throw new Error(data.error || 'Registration failed');
         }
 
+        console.log('Registration successful:', data);
+
         // Store user data and token in localStorage
         const userData = {
-            name,
-            email,
-            work,
+            isLoggedIn: true,
             token: data.token,
-            isLoggedIn: true
+            id: data.user.id,
+            name: data.user.username,
+            username: data.user.username,
+            email: data.user.email,
+            role: data.user.role
         };
         localStorage.setItem('userData', JSON.stringify(userData));
         
@@ -308,7 +319,10 @@ async function handleSignup(event) {
             window.location.href = 'index.html';
         }, 1500);
     } catch (error) {
+        console.error('Registration error:', error);
         showNotification(error.message, 'error');
+    } finally {
+        submitBtn.disabled = false;
     }
 }
 
@@ -346,16 +360,19 @@ document.addEventListener('DOMContentLoaded', function() {
     updateAccountDisplay();
     
     // Only setup forms if we're on the account page
+    const signupFormElement = document.getElementById('signupFormElement');
+    const loginFormElement = document.getElementById('loginFormElement');
     const signupForm = document.getElementById('signupForm');
-    const loginForm = document.getElementById('loginForm');
     
-    if (signupForm) {
+    if (signupFormElement) {
         signupForm.classList.add('hide');
-        signupForm.addEventListener('submit', handleSignup);
+        signupFormElement.addEventListener('submit', handleSignup);
+        console.log('Signup form initialized');
     }
     
-    if (loginForm) {
-        loginForm.addEventListener('submit', handleLogin);
+    if (loginFormElement) {
+        loginFormElement.addEventListener('submit', handleLogin);
+        console.log('Login form initialized');
     }
     
     // Handle logout button if present
@@ -385,7 +402,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set up real-time validation for signup form
     const signupName = document.getElementById('signupName');
     const signupEmail = document.getElementById('signupEmail');
-    const signupWork = document.getElementById('signupWork');
     const signupPassword = document.getElementById('signupPassword');
 
     if (signupName) {
@@ -399,13 +415,6 @@ document.addEventListener('DOMContentLoaded', function() {
         signupEmail.addEventListener('input', function() {
             const error = validateEmail(this.value.trim());
             showFieldError('signupEmail', error);
-        });
-    }
-
-    if (signupWork) {
-        signupWork.addEventListener('input', function() {
-            const error = validateWork(this.value.trim());
-            showFieldError('work', error);
         });
     }
 

@@ -6,74 +6,116 @@ A modern, responsive e-commerce website for custom printing services. This platf
 
 - **Product Customization**: Interactive design tool for personalizing products
 - **Responsive Design**: Fully responsive website that works on all devices
-- **Shopping Cart**: User-friendly shopping cart system
+- **Shopping Cart**: User-friendly shopping cart system with persistent storage
 - **User Accounts**: Personal account management and order tracking
 - **Community Section**: Space for users to share and showcase their designs
-- **Theme Toggle**: Persistent dark/light mode toggle accessible across all page
+- **Theme Toggle**: Persistent dark/light mode toggle with system preference detection
+- **Secure Payments**: Integrated Stripe payment processing with card validation
+- **Smart Shopping**: AI-assisted product recommendations
+- **AR Preview**: Augmented reality product preview capability
+- **3D Viewer**: Interactive 3D product visualization
+- **Social Features**: Community interaction and design sharing
+- **Lazy Loading**: Optimized image loading for better performance
 
 ## 🛠️ Technologies Used
 
-- HTML5
+- HTML5 & CSS3
 - JavaScript (ES6+)
+- Node.js & Express (Backend)
+- SQLite Database
+- Stripe Payment API
 - Font Awesome Icons
 - AOS (Animate On Scroll) library
+- Intersection Observer API
+- Local Storage API
 
 ## 📂 Project Structure
 
 ```
 printing/
+├── backend/
+│   ├── server.js (main server file)
+│   ├── db.js (database configuration)
+│   ├── imprimini.db (SQLite database)
+│   ├── routes/ (API endpoints)
+│   └── migrations/ (database migrations)
 ├── css/
-│   ├── styles.css (core styles and theme variables)
+│   ├── styles.css (core styles)
+│   ├── admin.css
 │   ├── cart.css
-│   ├── notifications.css
-│   ├── products.css
-│   └── drone-checkout.css
+│   └── products.css
 ├── js/
-│   ├── script.js
-│   ├── cart.js
-│   └── account.js
+│   ├── script.js (core functionality)
+│   ├── card-payment.js (Stripe integration)
+│   ├── account.js (user management)
+│   ├── products.js (product handling)
+│   ├── cart.js (shopping cart)
+│   ├── customizer.js (product customization)
+│   ├── 3d-viewer.js (3D product visualization)
+│   ├── ar-preview.js (AR functionality)
+│   ├── ai-assistant.js (smart shopping)
+│   └── social-features.js (community features)
 ├── img/
-│   ├── imprimini_white.png
-│   └── imprimini_black.png
+│   ├── product/ (product images)
+│   └── hero/ (hero section images)
 ├── data/
-│   ├── website_structure.csv
-│   ├── products_catalog.csv
-│   ├── customization_options.csv
-│   └── contact_info.csv
-└── html files
+│   └── products.json (product catalog)
+├── includes/
+│   └── header.html (reusable components)
+└── HTML files
     ├── index.html (home)
-    ├── products.html
-    ├── customize.html
-    ├── cart.html
-    ├── checkout.html
+    ├── products.html (product catalog)
+    ├── customize.html (product customization)
+    ├── cart.html (shopping cart)
+    ├── checkout.html (payment process)
     ├── order-confirmation.html
-    ├── orders.html
-    ├── account.html
+    ├── orders.html (order history)
+    ├── account.html (user profile)
     ├── account-settings.html
+    ├── admin.html (admin dashboard)
     ├── contact.html
     ├── about.html
-    └── community.html
+    └── community.html (social features)
 ```
 
-## 📋 Product Categories
+## 🚀 Getting Started
 
-1. **Clothing**
-   - Custom T-Shirts
-   - Hoodies
-   - Baseball Caps
-   - Tank Tops
+1. Clone the repository:
+```bash
+git clone https://github.com/Iyed2410/Imprimini.git
+```
 
-2. **Accessories**
-   - Phone Cases
-   - Coffee Mugs
-   - Tote Bags
-   - Mouse Pads
+2. Install dependencies:
+```bash
+cd Imprimini
+npm install
+```
 
-3. **Home Decor**
-   - Canvas Prints
-   - Wall Art
-   - Throw Pillows
-   - Photo Frames
+3. Set up environment variables:
+- Create a `.env` file in the backend directory
+- Add your Stripe API keys and other configuration
+
+4. Initialize the database:
+```bash
+cd backend
+node migrate.js
+```
+
+5. Start the server:
+```bash
+node server.js
+```
+
+6. Open `index.html` in your web browser to view the website locally.
+
+## 🔒 Security Features
+
+- Secure payment processing with Stripe
+- Input validation and sanitization
+- XSS protection
+- CSRF protection
+- Secure password hashing
+- Session management
 
 ## 🎨 Customization Options
 
@@ -83,17 +125,13 @@ printing/
   - Digital Printing
   - Embroidery
   - Heat Transfer
+  - Screen Printing
+  - DTG (Direct to Garment)
 - Material options
 - Frame selections (for decor items)
-
-## 💻 Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/Iyed2410/Imprimini.git
-```
-
-2. Open `index.html` in your web browser to view the website locally.
+- Custom design upload
+- Text customization
+- Design templates
 
 ## 🤝 Contributing
 
@@ -113,6 +151,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Font Awesome for icons
 - AOS library for scroll animations
+- Stripe for payment processing
 - All contributors who have helped with the project
 
 ---

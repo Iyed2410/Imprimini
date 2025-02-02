@@ -127,25 +127,111 @@
 .admin-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 1rem;
+    margin-top: 20px;
+    background: var(--surface-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .admin-table th,
 .admin-table td {
-    padding: 1rem;
+    padding: 15px;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
-    color: var(--text-color);
 }
 
 .admin-table th {
-    background-color: var(--navbar-bg);
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+}
+
+.admin-table tr:hover {
+    background-color: var(--hover-color);
+}
+
+.product-cell {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.product-thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.product-name {
     font-weight: 600;
     color: var(--text-color);
 }
 
-.admin-table tbody tr:hover {
-    background-color: var(--card-bg);
+.product-description {
+    font-size: 0.85em;
+    color: var(--text-secondary);
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.action-buttons button {
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.edit-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.delete-btn {
+    background-color: var(--error-color);
+    color: white;
+}
+
+.edit-btn:hover,
+.delete-btn:hover {
+    opacity: 0.9;
+}
+
+.add-product-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.add-product-btn:hover {
+    opacity: 0.9;
+}
+
+.add-product-btn i {
+    font-size: 1.1em;
 }
 
 /* Form Styles */
@@ -188,56 +274,6 @@
 }
 
 /* Button Styles */
-.add-product-btn {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 0.8rem 1.5rem;
-    border-radius: 4px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    margin-bottom: 1rem;
-    transition: background-color 0.3s;
-}
-
-.add-product-btn i {
-    margin-right: 0.5rem;
-}
-
-.add-product-btn:hover {
-    background-color: var(--hover-color);
-}
-
-/* Action Buttons */
-.action-btn {
-    padding: 0.5rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 0.5rem;
-    transition: background-color 0.3s;
-}
-
-.edit-btn {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-.edit-btn:hover {
-    background-color: var(--hover-color);
-}
-
-.delete-btn {
-    background-color: var(--accent-color);
-    color: white;
-}
-
-.delete-btn:hover {
-    background-color: #ff1744;
-}
-
-/* Submit Button */
 .btn-primary {
     background-color: var(--primary-color);
     color: white;
@@ -287,4 +323,137 @@
     .stats-grid {
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     }
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    margin: 5% auto;
+    padding: 1.5rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    color: var(--text-color);
+}
+
+.modal-content h2 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.7rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+.form-group textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px var(--shadow-color);
+}
+
+.close {
+    position: absolute;
+    right: 1rem;
+    top: 0.8rem;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+.close:hover {
+    color: var(--primary-color);
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.drop-zone {
+    width: 100%;
+    height: 200px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+    position: relative;
+    background: #f8f9fa;
+}
+
+.drop-zone.dragover {
+    border-color: #4CAF50;
+    background: #e8f5e9;
+}
+
+.drop-zone-prompt {
+    text-align: center;
+    color: #666;
+}
+
+.drop-zone-prompt i {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    color: #999;
+}
+
+.image-preview {
+    max-width: 100%;
+    max-height: 180px;
+    object-fit: contain;
+    border-radius: 6px;
 }

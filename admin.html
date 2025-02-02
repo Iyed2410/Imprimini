@@ -105,7 +105,6 @@
                 <!-- Products Section -->
                 <section id="products-section" class="admin-section">
                     <h2>Products Management</h2>
-                    <button class="add-product-btn"><i class="fas fa-plus"></i> Add New Product</button>
                     <div class="table-container">
                         <table class="admin-table">
                             <thead>
@@ -191,6 +190,33 @@
 
     <div id="notification" class="notification" style="display: none;">
         <span id="notificationMessage"></span>
+    </div>
+
+    <div id="editProductModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Product</h2>
+            <form id="editProductForm">
+                <input type="hidden" id="editProductId" name="id">
+                <div class="form-group">
+                    <label for="editProductName">Product Name</label>
+                    <input type="text" id="editProductName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="editProductPrice">Price (TND)</label>
+                    <input type="number" id="editProductPrice" name="price" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="editProductStock">Stock</label>
+                    <input type="number" id="editProductStock" name="stock" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="editProductDescription">Description</label>
+                    <textarea id="editProductDescription" name="description" required></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Save Changes</button>
+            </form>
+        </div>
     </div>
 
     <script src="js/include.js"></script>

@@ -5,12 +5,13 @@ async function loadProducts() {
     try {
         const response = await fetch('http://localhost:3000/api/products');
         const data = await response.json();
+        console.log('Received data:', data); // Debug log
         
-        if (data.success) {
-            products = data.products;
-            renderProducts(); // Render products after loading
+        if (Array.isArray(data)) {
+            products = data;
+            renderProducts(products); // Render products after loading
         } else {
-            throw new Error(data.message || 'Failed to load products');
+            throw new Error('Invalid response format');
         }
     } catch (error) {
         console.error('Error loading products:', error);
@@ -38,6 +39,20 @@ function renderProducts(productsToRender = products) {
         productCard.setAttribute('data-aos', 'fade-up');
         productCard.setAttribute('data-product-id', product.id);
 
+        // Create color swatches HTML if colors exist
+        const colorSwatchesHtml = product.colors && product.colors.length > 0 ? `
+            <div class="color-swatches">
+                ${product.colors.map((color, index) => `
+                    <div class="color-swatch ${index === 0 ? 'active' : ''}" 
+                         data-image="${color.image}"
+                         data-color-name="${color.name}"
+                         style="background-image: url('${color.image}');"
+                         title="${color.name}">
+                    </div>
+                `).join('')}
+            </div>
+        ` : '';
+
         productCard.innerHTML = `
             <div class="product-image">
                 <img src="${product.image}" alt="${product.name}" 
@@ -53,6 +68,7 @@ function renderProducts(productsToRender = products) {
                     </a>
                 </div>
             </div>
+            ${colorSwatchesHtml}
             <div class="product-info">
                 <h3 class="product-title">${product.name}</h3>
                 <p class="product-description">${product.description}</p>
@@ -61,6 +77,21 @@ function renderProducts(productsToRender = products) {
         `;
 
         productsContainer.appendChild(productCard);
+
+        // Add color swatch functionality
+        const colorSwatches = productCard.querySelectorAll('.color-swatch');
+        const productImage = productCard.querySelector('.product-image img');
+        
+        colorSwatches.forEach(swatch => {
+            swatch.addEventListener('click', function() {
+                // Update active state
+                colorSwatches.forEach(s => s.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update product image
+                productImage.src = this.dataset.image;
+            });
+        });
 
         // Add event listener for Add to Cart button
         const addToCartBtn = productCard.querySelector('.add-to-cart-btn');
@@ -76,11 +107,17 @@ function renderProducts(productsToRender = products) {
                     window.cart = new Cart();
                 }
 
+                // Get selected color
+                const activeColorSwatch = productCard.querySelector('.color-swatch.active');
+                const selectedColor = activeColorSwatch ? activeColorSwatch.dataset.colorName : null;
+                const selectedImage = activeColorSwatch ? activeColorSwatch.dataset.image : product.image;
+
                 const cartItem = {
                     id: product.id,
                     name: product.name,
                     price: product.price,
-                    image: product.image,
+                    image: selectedImage,
+                    color: selectedColor,
                     quantity: 1
                 };
 
@@ -89,11 +126,18 @@ function renderProducts(productsToRender = products) {
                 if (success) {
                     // Find the item in cart to get its current quantity
                     const cartItems = window.cart.items;
-                    const addedItem = cartItems.find(item => item.id === product.id && !item.customImage);
+                    const addedItem = cartItems.find(item => 
+                        item.id === product.id && 
+                        item.color === selectedColor && 
+                        !item.customImage
+                    );
                     const quantity = addedItem ? addedItem.quantity : 1;
                     
-                    // Show success message with quantity
-                    showNotification(`Added to cart (Quantity: ${quantity})`, 'success');
+                    // Show success message with quantity and color if selected
+                    const message = selectedColor 
+                        ? `Added ${selectedColor} ${product.name} to cart (Quantity: ${quantity})`
+                        : `Added ${product.name} to cart (Quantity: ${quantity})`;
+                    showNotification(message, 'success');
                     
                     // Update cart count
                     const cartCount = document.querySelector('.cart-icon');

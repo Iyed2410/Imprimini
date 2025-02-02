@@ -349,3 +349,11 @@ function showNotification(message, type = 'success') {
         }, 300);
     }, 3000);
 }
+
+// Initialize AOS (Animate On Scroll)
+document.addEventListener('DOMContentLoaded', function() {
+    AOS.init({
+        duration: 1000,
+        once: true
+    });
+});

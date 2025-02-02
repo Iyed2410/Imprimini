@@ -1,3 +1,7 @@
+// Initialize Stripe
+const stripe = Stripe('your_publishable_key'); // Replace with your actual Stripe publishable key
+const elements = stripe.elements();
+
 document.addEventListener('DOMContentLoaded', function() {
     const cardItem = document.querySelector('.card-item');
     const cardNumber = document.getElementById('cardNumber');
@@ -6,6 +10,31 @@ document.addEventListener('DOMContentLoaded', function() {
     const cardYear = document.getElementById('cardYear');
     const cardCvv = document.getElementById('cardCvv');
     const form = document.querySelector('.card-form__inner');
+
+    // Create Stripe card element
+    const stripeCard = elements.create('card', {
+        style: {
+            base: {
+                color: '#32325d',
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '16px',
+                '::placeholder': {
+                    color: '#aab7c4'
+                }
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a'
+            }
+        }
+    });
+
+    // Mount Stripe card if element exists
+    const stripeCardElement = document.getElementById('card-element');
+    if (stripeCardElement) {
+        stripeCard.mount('#card-element');
+    }
 
     // Set random background
     const randomBg = Math.floor(Math.random() * 25 + 1);
@@ -100,13 +129,9 @@ document.addEventListener('DOMContentLoaded', function() {
         updateCardNumber(value);
     });
 
-    cardName.addEventListener('input', (e) => {
-        document.querySelector('.card-item__name').textContent = e.target.value || 'FULL NAME';
-    });
-
+    cardName.addEventListener('input', updateCardName);
     cardMonth.addEventListener('change', updateExpiry);
     cardYear.addEventListener('change', updateExpiry);
-
     cardCvv.addEventListener('focus', () => flipCard(true));
     cardCvv.addEventListener('blur', () => flipCard(false));
 
@@ -116,36 +141,101 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize card display
     updateCardNumber('');
-    document.querySelector('.card-item__name').textContent = 'FULL NAME';
-    document.querySelector('.card-item__dateContent:first-child').textContent = 'MM';
-    document.querySelector('.card-item__dateContent:last-child').textContent = 'YY';
+    updateCardName();
+    updateExpiry();
     document.querySelector('.card-item__cvvBand').textContent = '***';
 
-    // Form submission
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        if (!cardNumber.value || cardNumber.value.replace(/\D/g, '').length < 16) {
-            alert('Please enter a valid card number');
-            return;
-        }
-        
-        if (!cardName.value) {
-            alert('Please enter card holder name');
-            return;
-        }
-        
-        if (!cardMonth.value || !cardYear.value) {
-            alert('Please select expiry date');
-            return;
-        }
-        
-        if (!cardCvv.value || cardCvv.value.length < 3) {
-            alert('Please enter a valid CVV');
-            return;
-        }
+    // Enhanced form submission with Stripe integration
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitButton = form.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<span>Processing...</span> <i class="fas fa-spinner fa-spin"></i>';
+            }
 
-        console.log('Payment processed successfully!');
-        alert('Payment processed successfully!');
-    });
+            // Basic validation
+            if (!cardNumber.value || cardNumber.value.replace(/\D/g, '').length < 16) {
+                showError('Please enter a valid card number');
+                return;
+            }
+            
+            if (!cardName.value) {
+                showError('Please enter card holder name');
+                return;
+            }
+            
+            if (!cardMonth.value || !cardYear.value) {
+                showError('Please select expiry date');
+                return;
+            }
+            
+            if (!cardCvv.value || cardCvv.value.length < 3) {
+                showError('Please enter a valid CVV');
+                return;
+            }
+
+            try {
+                // Process payment with Stripe
+                const result = await stripe.createToken(stripeCard);
+                if (result.error) {
+                    throw new Error(result.error.message);
+                }
+
+                // Clear cart after successful payment
+                if (window.cart) {
+                    window.cart.items = [];
+                    window.cart.saveCart();
+                }
+
+                // Show success and redirect
+                showNotification('Payment successful! Thank you for your purchase.');
+                setTimeout(() => {
+                    window.location.href = 'order-confirmation.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error('Payment error:', error);
+                showError(error.message || 'Payment failed. Please try again.');
+            } finally {
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = '<span>Pay Now</span> <i class="fas fa-lock"></i>';
+                }
+            }
+        });
+    }
+
+    // Handle Stripe card validation
+    if (stripeCard) {
+        stripeCard.addEventListener('change', function(event) {
+            const displayError = document.getElementById('card-errors');
+            if (displayError) {
+                displayError.textContent = event.error ? event.error.message : '';
+            }
+        });
+    }
+
+    // Helper functions
+    function showError(message) {
+        const errorElement = document.getElementById('card-errors');
+        if (errorElement) {
+            errorElement.textContent = message;
+        } else {
+            alert(message);
+        }
+    }
+
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
 });
